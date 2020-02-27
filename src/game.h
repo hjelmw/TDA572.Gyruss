@@ -9,40 +9,19 @@ private:
 
 	AvancezLib* engine;
 
-	ObjectPool<Rocket> rockets_pool;	// used to instantiate rockets
+	Player* player;
+	Sprite* life_sprite;
+	AliensGrid* aliens_grid;
 
+	ObjectPool<Rocket> rockets_pool;	// used to instantiate rockets
 	ObjectPool<Alien> aliens_pool;		// pool of aliens
 
 	ObjectPool<AlienBomb> bombs_pool;
 
-	Player* player;
-
-	Sprite* life_sprite;
 	bool game_over = false;
-
 	bool canSpawn = true;
 
 	unsigned int score = 0;
-
-	// Spawn aliens in grid format
-	void SpawnAliens(ObjectPool<Alien>& aliens_pool)
-	{
-		int angle = 0;
-		int xPos;
-		int yPos;
-		for (auto alien = aliens_pool.pool.begin(); alien != aliens_pool.pool.end(); alien++)
-		{
-			angle += 90;
-			if (angle > 360) angle = 0;
-
-			xPos = engine->screenWidth / 2 + 40 * cos((float)((int)angle * (M_PI / 180.0f)));
-			yPos = engine->screenHeight / 2 + 40 * sin((float)((int)angle * (M_PI / 180.0f)));
-
-			(*alien)->Init(xPos, yPos, 2, 2);
-			(*alien)->enabled = true;
-		}
-	}
-
 public:
 
 	virtual void Create(AvancezLib* engine)
@@ -57,10 +36,16 @@ public:
 		player_behaviour->Create(engine, player, &game_objects, &rockets_pool);
 		RenderComponent* player_render = new RenderComponent();
 		player_render->Create(engine, player, &game_objects, "data/player.bmp");
+		CollideComponent* player_bomb_collision = new CollideComponent();
+		player_bomb_collision->Create(engine, player, &game_objects, reinterpret_cast<ObjectPool<GameObject>*>(&bombs_pool));
+		CollideComponent* player_alien_collision = new CollideComponent();
+		player_alien_collision->Create(engine, player, &game_objects, reinterpret_cast<ObjectPool<GameObject>*>(&aliens_pool));
 
 		player->Create();
 		player->AddComponent(player_behaviour);
 		player->AddComponent(player_render);
+		player->AddComponent(player_bomb_collision);
+		player->AddComponent(player_alien_collision);
 		player->AddReceiver(this);
 		game_objects.insert(player);
 
@@ -78,8 +63,7 @@ public:
 			(*rocket)->AddComponent(render);
 		}
 
-
-		aliens_pool.Create(4);
+		aliens_pool.Create(11);
 		for (auto alien = aliens_pool.pool.begin(); alien != aliens_pool.pool.end(); alien++)
 		{
 			AlienBehaviorComponent* alien_behavior = new AlienBehaviorComponent();
@@ -100,15 +84,35 @@ public:
 			(*alien)->AddComponent(alien_player_collision);
 			(*alien)->AddComponent(alien_rocket_collision);
 			(*alien)->AddReceiver(this);
-
-			game_objects.insert(*alien); // Aliens should spawn at start of game
 		}
+
+		bombs_pool.Create(50);
+		for (auto bomb = bombs_pool.pool.begin(); bomb != bombs_pool.pool.end(); bomb++)
+		{
+			AlienBombBehaviorComponent* bomb_behaviour = new AlienBombBehaviorComponent();
+			bomb_behaviour->Create(engine, *bomb, &game_objects);
+			RenderComponent* bomb_render = new RenderComponent();
+			bomb_render->Create(engine, *bomb, &game_objects, "data/bomb.bmp");
+
+			(*bomb)->Create();
+			(*bomb)->AddComponent(bomb_behaviour);
+			(*bomb)->AddComponent(bomb_render);
+		}
+
+		aliens_grid = new AliensGrid();
+		AliensGridBehaviourComponent* aliensgrid_behaviour = new AliensGridBehaviourComponent();
+		aliensgrid_behaviour->Create(engine, aliens_grid, &game_objects, &aliens_pool, &bombs_pool, player);
+		aliens_grid->Create();
+		aliens_grid->AddComponent(aliensgrid_behaviour);
+		
+		// Aliens shoud spawn immediately
+		game_objects.insert(aliens_grid);
 	}
 
 	virtual void Init()
 	{
 		player->Init();
-		SpawnAliens(aliens_pool); // Spawn aliens in grid
+		aliens_grid->Init(); // Spawn aliens in grid
 		enabled = true;
 	}
 
@@ -131,7 +135,7 @@ public:
 	// Draw UI and text elements here
 	virtual void Draw()
 	{
-		engine->drawText(0, 0, "Test");
+		engine->drawText(GAME_CENTER_X - 20, 10, "Gyruss");
 	}
 
 	virtual void Receive(Message m)

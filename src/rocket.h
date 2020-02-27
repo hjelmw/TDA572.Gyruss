@@ -3,13 +3,11 @@
 
 class RocketBehaviourComponent : public Component
 {
-
-
 public:
 
 	void Update(float dt)
 	{
-		if ( RocketShouldMove() )
+		if (RocketShouldMove())
 		{
 			MoveRocket(dt);
 			ShrinkRocket(dt);
@@ -18,10 +16,9 @@ public:
 			go->enabled = false;
 	}
 
-
 	bool RocketShouldMove()
 	{
-		return (go->width >= 10 && go->height >= 10);
+		return (go->width >= 2 && go->height >= 2);
 	}
 
 	void MoveRocket(float dt)
@@ -55,7 +52,6 @@ public:
 
 		SDL_Log("Rocket::Init");
 		GameObject::Init();
-
 	}
 
 	virtual void Receive(Message m)

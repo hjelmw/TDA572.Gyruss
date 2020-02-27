@@ -38,7 +38,7 @@ bool AvancezLib::Init(int width, int height)
 	}
 
 	TTF_Init();
-	font = TTF_OpenFont("data/space_invaders.ttf", 12); //this opens a font style and sets a size
+	font = TTF_OpenFont("data/space_invaders.ttf", 14); //this opens a font style and sets a size
 	if (font == NULL)
 	{
 		SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "font cannot be created! SDL_Error: %s\n", SDL_GetError());
