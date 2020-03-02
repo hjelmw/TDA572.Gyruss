@@ -59,3 +59,35 @@ void CollideComponent::Update(float dt)
 	}
 }
 
+void BoxCollideComponent::Create(AvancezLib* engine, GameObject* go, int xMax, int yMax)
+{
+	Component::Create(engine, go, game_objects);
+
+	this->xMin = 0;
+	this->xMax = xMax;
+	this->yMin = 0;
+	this->yMax = yMax;
+}
+
+void BoxCollideComponent::Update(float dt)
+{
+	double xPos = go->position.x;
+	double yPos = go->position.y;
+
+	//Alien* alien = (Alien*)go;
+	//if (alien != NULL)
+	//{
+	//	// Alien should not be removed while traveling to game field
+	//	if (alien->currentState != Alien::STATE_INITIAL1 && (xPos <= xMin || xPos >= xMax || yPos <= yMin || yPos >= yMax))
+	//	{
+	//		go->enabled = false;
+	//		SDL_Log("Out of bounds");
+	//	}
+	//}
+
+	if (xPos <= xMin || xPos >= xMax || yPos <= yMin || yPos >= yMax)
+	{
+		go->enabled = false;
+		SDL_Log("Out of bounds");
+	}
+}

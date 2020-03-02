@@ -79,6 +79,9 @@ public:
 			CollideComponent* alien_rocket_collision = new CollideComponent();
 			alien_rocket_collision->Create(engine, *alien, &game_objects, (ObjectPool<GameObject>*) & rockets_pool);
 
+			BoxCollideComponent* alien_box_collision = new BoxCollideComponent();
+			alien_box_collision->Create(engine, *alien, engine->screenHeight, engine->screenWidth	);
+
 			(*alien)->AddComponent(alien_behavior);
 			(*alien)->AddComponent(alien_render);
 			(*alien)->AddComponent(alien_player_collision);
@@ -93,8 +96,11 @@ public:
 			bomb_behaviour->Create(engine, *bomb, &game_objects);
 			RenderComponent* bomb_render = new RenderComponent();
 			bomb_render->Create(engine, *bomb, &game_objects, "data/bomb.bmp");
+			BoxCollideComponent* bomb_box_collision = new BoxCollideComponent();
+			bomb_box_collision->Create(engine, *bomb, engine->screenHeight, engine->screenWidth);
 
 			(*bomb)->Create();
+			(*bomb)->AddComponent(bomb_box_collision);
 			(*bomb)->AddComponent(bomb_behaviour);
 			(*bomb)->AddComponent(bomb_render);
 		}

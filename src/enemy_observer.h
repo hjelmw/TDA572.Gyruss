@@ -30,7 +30,7 @@ public:
 		{
 			
 			auto alien = aliens_pool->FirstAvailable();
-			(*alien).Init(j * (engine->screenWidth - 200) + (j*i*40), engine->screenHeight + 100 + (i*40), 35, 35, 50, randomInitialState);
+			(*alien).Init(j * (engine->screenWidth - 200) + (j*i*40), engine->screenHeight + 100 + (i*40), 35, 35, 60, randomInitialState);
 			game_objects->insert(alien);
 
 			j *= -1;
@@ -78,8 +78,8 @@ public:
 						if (alienToReposition != NULL && alien->currentState == Alien::STATE_CIRCLE)
 						{
 							// New position for alien in swarm
-							int swarmPosX = randX + fmod(rand(), 60);
-							int swarmPosY = randX + fmod(rand(), 60);
+							int swarmPosX = randX + fmod(rand(), 80);
+							int swarmPosY = randX + fmod(rand(), 80);
 							Vector2D newPosition = Vector2D(swarmPosX, swarmPosY);
 
 							// Set alien direction to new position

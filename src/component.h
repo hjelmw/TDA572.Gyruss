@@ -48,3 +48,14 @@ public:
 	virtual void Create(AvancezLib* engine, GameObject * go, std::set<GameObject*> * game_objects, ObjectPool<GameObject> * coll_objects);
 	virtual void Update(float dt);
 };
+
+class BoxCollideComponent : public Component
+{
+protected:
+	int xMax, yMax, xMin, yMin;
+	double radius;
+
+public:
+	virtual void Create(AvancezLib* engine, GameObject* go, int xMax, int yMax);
+	virtual void Update(float dt);
+};

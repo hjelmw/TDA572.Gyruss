@@ -9,17 +9,17 @@ const unsigned int	POINTS_PER_ALIEN           = 100;
 
 /* Player parameters */
 const float			FIRE_TIME_INTERVAL = 0.7f;
-const float			PLAYER_SPEED       = 70.0f;
+const float			PLAYER_SPEED       = 55.0f;
 const float			ROCKET_SPEED       = 600.0f;
 const unsigned int	MAX_NUM_ROCKETS    = 32;
 
 
 /* Alien ship parameters */
 const float			ALIEN_ACTION_INTERVAL   = 1.2;
-const float			ALIEN_SPEED_BASE        = 400.0f;
+const float			ALIEN_SPEED_BASE        = 550.0f;
 const float			ALIEN_SPEED_CIRCLE      = 20.0f;
 const float			ALIEN_SIZE_SPEED        = 5.0f;
-const float			BOMB_SPEED              = 400.0f;
+const float			BOMB_SPEED              = 500.0f;
 const float			ALIEN_FIRE_INTERVAL     = 0.2f;
 const unsigned int	MAX_NUM_BOMBS           = 32;
 const unsigned int	ALIEN_CONSECUTIVE_SHOTS = 6;

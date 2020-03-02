@@ -172,8 +172,6 @@ private:
 		{
 		case Alien::STATE_INITIAL1:
 		{
-			go->position = go->position - (go->direction * ALIEN_SPEED_BASE * dt);
-
 			if (distance <= alien->radius)
 			{
 				alien->originX = GAME_CENTER_X;
@@ -182,6 +180,7 @@ private:
 
 				alien->currentState = Alien::STATE_CIRCLE;
 			}
+			go->position = go->position - (go->direction * ALIEN_SPEED_BASE * dt);
 		}
 		break;
 
@@ -212,11 +211,9 @@ private:
 				alien->direction = (alien->position - returnPos) / distance;
 
 				alien->currentState = Alien::STATE_INITIAL1;
-				//alien->currentState = Alien::STATE_INITIAL1;
 				break;
 			}
-		}
-		// STATE_CIRCLE_OUTER falls through to STATE_CIRCLE
+		} // STATE_CIRCLE_OUTER falls through to STATE_CIRCLE
 		case Alien::STATE_CIRCLE:
 		{
 			double circleSpeedModifier = distanceToMiddle != 0 ? alien->radius / distanceToMiddle : 1;
