@@ -18,8 +18,10 @@ private:
 
 	ObjectPool<AlienBomb> bombs_pool;
 
-	bool game_over = false;
+	bool gameOver = false;
 	bool canSpawn = true;
+	float spawnDelay;
+	int spawnLeft = ALIEN_AMOUNT;
 
 	unsigned int score = 0;
 public:
@@ -63,7 +65,7 @@ public:
 			(*rocket)->AddComponent(render);
 		}
 
-		aliens_pool.Create(20);
+		aliens_pool.Create(ALIEN_AMOUNT);
 		for (auto alien = aliens_pool.pool.begin(); alien != aliens_pool.pool.end(); alien++)
 		{
 			AlienBehaviorComponent* alien_behavior = new AlienBehaviorComponent();
@@ -118,7 +120,7 @@ public:
 	virtual void Init()
 	{
 		player->Init();
-		aliens_grid->Init(); // Spawn aliens in grid
+		spawnDelay = engine->getElapsedTime() + ALIEN_SPAWN_TIME;
 		enabled = true;
 	}
 
@@ -129,6 +131,16 @@ public:
 		if (keys.esc) {
 			Destroy();
 			engine->quit();
+		}
+
+		if (canSpawn && spawnLeft > 0 && spawnDelay - engine->getElapsedTime() <= 0)
+		{
+			// Spawns 4 aliens
+			aliens_grid->Init();
+
+			spawnLeft -= 4;
+			canSpawn = spawnLeft > 0 ? true : false;
+			spawnDelay = engine->getElapsedTime() + ALIEN_SPAWN_TIME;
 		}
 
 		for (auto go = game_objects.begin(); go != game_objects.end(); go++)
@@ -149,7 +161,7 @@ public:
 		if (m == GAME_OVER)
 		{
 			engine->drawText(200, 400, "--- Game Over ---");
-			game_over = true;
+			gameOver = true;
 		}
 
 		if (m == ALIEN_HIT)

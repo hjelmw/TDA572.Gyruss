@@ -11,6 +11,7 @@ class PlayerBehaviourComponent : public Component
 	float angle;
 	float angle_percent;
 
+
 	double originX;
 	double originY;
 public:
@@ -28,7 +29,6 @@ public:
 		radius = engine-> screenWidth  / 2 - 40;
 		originX = engine->screenWidth / 2 - 20;
 		originY = engine->screenHeight / 2 - 20;
-
 
 		go->position.x = originX + radius * cos((float)((int)angle * (M_PI / 180.0f)));
 		go->position.y = originY + radius * sin((float)((int)angle * (M_PI / 180.0f)));
@@ -103,6 +103,7 @@ public:
 // the main player
 class Player : public GameObject
 {
+	float playerInvulnerable;
 public:
 
 	int lives;	// it's game over when goes below zero 
@@ -111,6 +112,8 @@ public:
 
 	virtual void Init()
 	{
+		//playerInvulnerable = engine->getElapsedTime() + PLAYER_INVULNERABLE_TIME;
+
 		SDL_Log("Player::Init");
 		GameObject::Init();
 		lives = NUM_LIVES;

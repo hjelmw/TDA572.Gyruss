@@ -22,7 +22,7 @@ void RenderComponent::Update(float dt)
 		return;
 
 	if (sprite)
-		sprite->draw(int(go->position.x), int(go->position.y), int(go->width), int(go->height));
+		sprite->draw(int(go->position.x), int(go->position.y), int(go->width), int(go->height), 90);
 }
 
 void RenderComponent::Destroy()

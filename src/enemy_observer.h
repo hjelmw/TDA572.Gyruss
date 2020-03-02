@@ -11,7 +11,7 @@ class EnemyObserverBehaviorComponent : public Component
 public:
 	virtual ~EnemyObserverBehaviorComponent() {}
 
-	virtual void Create(AvancezLib* engine, GameObject* go, std::set<GameObject*>* game_objects, ObjectPool<Alien>* aliens_pool, ObjectPool<AlienBomb>* bombs_pool, Player *player)
+	virtual void Create(AvancezLib* engine, GameObject* go, std::set<GameObject*>* game_objects, ObjectPool<Alien>* aliens_pool, ObjectPool<AlienBomb>* bombs_pool, Player* player)
 	{
 		Component::Create(engine, go, game_objects);
 
@@ -23,18 +23,22 @@ public:
 	virtual void Init()
 	{
 		time_alien_action = engine->getElapsedTime();
-		int randomInitialState = rand() % 2; // Aliens can start in one of two places
 
 		short j = 1;
-		for (int i = 0; i < aliens_pool->pool.size(); i++ )
-		{
-			
-			auto alien = aliens_pool->FirstAvailable();
-			(*alien).Init(j * (engine->screenWidth - 200) + (j*i*40), engine->screenHeight + 100 + (i*40), 35, 35, 60, randomInitialState);
-			game_objects->insert(alien);
+		short k = 1;
 
-			j *= -1;
+		// Spawn 4 aliens in each corner
+		for (int i = 0; i < 4; i++)
+		{
+			auto alien = aliens_pool->FirstAvailable();
+			(*alien).Init(GAME_CENTER_X + 50 * j, GAME_CENTER_Y + 70 * k, 35, 35, 60, j, k, Alien::STATE_INITIAL2);
+			game_objects->insert(alien);
+			j *= -1; 
+			if(j == -1)
+				k *= -1;
 		}
+
+
 
 		change_direction = false;
 	}
@@ -42,42 +46,32 @@ public:
 	virtual void Update(float dt)
 	{
 		// is enough time passed from the last bomb, shoot another bomb from a random active alien
-		int randomAlienAction = static_cast<Alien::alienState>(AlienCanPerformRandomAction());
+		int randomAlienAction = static_cast<Alien::AlienState>(AlienCanPerformRandomAction());
+		//int randomAlienAction = 0xFFFF;
 		if (randomAlienAction != 0xFFFF)
 		{
 			auto alien = aliens_pool->SelectRandom();
-			if (randomAlienAction != Alien::STATE_INITIAL1)
+			if (alien != NULL && alien->currentState != Alien::STATE_INITIAL2)
 			{
 				switch (randomAlienAction)
 				{
-				//case Alien::STATE_DIVE:
-				//{
-
-				//	// Aim for player
-				//	float distance = sqrt(pow(player->position.x - alien->position.x, 2) + pow(player->position.y - alien->position.y, 2));
-				//	alien->direction = (alien->position - player->position) / distance;
-				//	alien->radius = distance;
-				//		
-				//	alien->originX = GAME_CENTER_X;
-				//	alien->originY = GAME_CENTER_Y;
-
-				//	alien->currentState = static_cast<Alien::alienState>(randomAlienAction);
-				//	//alien->currentState = Alien::STATE_DIVE;
-				//	SDL_Log("Alien::Dive");
-				//}
+				case Alien::STATE_INITIAL2:
+				{
+					// This might not be needed							
+				}
 				break;
 				case Alien::STATE_REPOSITION:
-				{ 
-					// Generate new random position for alien
-					int randX = rand() % (engine->screenWidth - 400);
-					int randY = rand() % (engine->screenHeight - 400);
+				{
+					// Generate new random position for the swarm
+					int randX = rand() % (engine->screenWidth - 400) + 200;
+					int randY = rand() % (engine->screenHeight - 400) + 200;
 
 					for (int i = 0; i < ALIENS_IN_SWARM; i++)
 					{
 						Alien* alienToReposition = aliens_pool->SelectRandom();
 						if (alienToReposition != NULL && alien->currentState == Alien::STATE_CIRCLE)
 						{
-							// New position for alien in swarm
+							// Slight variation in swarm position for each alien
 							int swarmPosX = randX + fmod(rand(), 80);
 							int swarmPosY = randX + fmod(rand(), 80);
 							Vector2D newPosition = Vector2D(swarmPosX, swarmPosY);
@@ -86,13 +80,10 @@ public:
 							float distance = sqrt(pow(newPosition.x - alien->position.x, 2) + pow(newPosition.y - alien->position.y, 2));
 							alienToReposition->direction = (alien->position - newPosition) / distance;
 							alienToReposition->radius = distance / 2;
-							alienToReposition->currentState = static_cast<Alien::alienState>(randomAlienAction);
+							alienToReposition->currentState = static_cast<Alien::AlienState>(randomAlienAction);
 						}
 					}
-					//alien->direction = (alien->position - newPosition) / distance;
-					//alien->radius = distance/2;
-					//alien->currentState = static_cast<Alien::alienState>(randomAlienAction);
- 					SDL_Log("Alien::Reposition");
+					SDL_Log("Alien::Reposition");
 				}
 				break;
 				case Alien::STATE_FIRE1:
@@ -100,10 +91,10 @@ public:
 					Alien* alienToFire = aliens_pool->SelectRandom();
 					if (alienToFire != NULL)
 					{
-						alienToFire->currentState = static_cast<Alien::alienState>(randomAlienAction);
+						alienToFire->currentState = static_cast<Alien::AlienState>(randomAlienAction);
 					}
 					SDL_Log("Alien::Fire1");
-				}				
+				}
 				break;
 
 				case Alien::STATE_FIRE2:
@@ -117,7 +108,7 @@ public:
 					SDL_Log("Alien::Fire2");
 				}
 				break;
-				
+
 				}
 			}
 		}
@@ -136,7 +127,7 @@ public:
 
 		// Random state between 4-7
 		time_alien_action = engine->getElapsedTime();
-		int randomAction = rand() % 3 + 2;
+		int randomAction = rand() % 6 + 4;
 
 		return randomAction;
 	}
@@ -172,7 +163,7 @@ public:
 class EnemyObserver : public GameObject
 {
 public:
-	
+
 	virtual ~EnemyObserver() { SDL_Log("AliensGrid::~AliensGrid"); }
 
 

@@ -26,34 +26,40 @@ public:
 	*/
 	typedef enum alienStates {
 		STATE_INITIAL1,
+		STATE_INITIAL2,
 		STATE_CIRCLE,
 		STATE_CIRCLE_OUTER,
 		STATE_REPOSITION,
 		STATE_FIRE1, STATE_FIRE2
 
-	} alienState;
-	alienState currentState;
-	alienState previousState;
+	} AlienState;
+	AlienState currentState;
+	AlienState previousState;
 	
 	int shotsLeft;
+	int circularDirectionX;
+	int circularDirectionY;
 
 	// Movement
 	double originX;
 	double originY;
+	double angle;
 	int radius;
-
 
 	virtual ~Alien() { SDL_Log("Alien::~Alien"); }
 
-	virtual void Init(double xPos, double yPos, double xSize, double ySize, int radius, int state)
+	virtual void Init(double xPos, double yPos, double xSize, double ySize, int radius, int circularDirectionX, int circularDirectionY, AlienState state)
 	{
 		this->position.x = xPos;
 		this->position.y = yPos;
+
 		this->width = xSize;
 		this->height = ySize;
 		this->radius = radius;
 		this->shotsLeft = 0;
-		this->currentState = Alien::STATE_INITIAL1;
+		this->currentState = state;
+		this->circularDirectionX = circularDirectionX;
+		this->circularDirectionY = circularDirectionY;
 
 		// Random point inside circle of given radius
 		double randN = rand() / (double)(RAND_MAX);
@@ -72,6 +78,9 @@ public:
 		direction = (this->position - gameCenter) / distance;
 
 		this->radius = r;
+		this->angle = 180 * this->circularDirectionX;
+		this->originX = xPos;
+		this->originY = yPos;
 
 		// Print stuff to console
 		std::stringstream ss;
@@ -84,17 +93,6 @@ public:
 	{
 		if (!enabled)
 			return;
-
-		if (m == ALIENS_MOVE_GRID)
-		{
-			position.y += 40;
-			changeDirection = !changeDirection;
-
-			if (changeDirection)
-				position.x += 1;
-			else
-				position.x -= 1;
-		}
 
 		if (m == HIT)
 		{
@@ -145,11 +143,9 @@ private:
 	float timeUntilReturn;
 	float timeSinceLastFire;
 
-	float distanceToMiddle = sqrt(pow(GAME_CENTER_X - GAME_CENTER_X + 40, 2) + pow(GAME_CENTER_Y - GAME_CENTER_Y + 40, 2));
+	float scale;
 
-	//double originX;
-	//double originY;
-	double angle;
+	float distanceToMiddle = sqrt(pow(GAME_CENTER_X - GAME_CENTER_X + 40, 2) + pow(GAME_CENTER_Y - GAME_CENTER_Y + 40, 2));
 
 	void MoveAlien(float dt)
 	{
@@ -170,13 +166,32 @@ private:
 		*/
 		switch (alien->currentState)
 		{
+		case Alien::STATE_INITIAL2:
+		{
+			if (distance <= alien->radius)
+			{
+				alien->originX = GAME_CENTER_X;
+				alien->originY = GAME_CENTER_Y;
+				alien->angle = atan2(go->position.y - GAME_CENTER_Y, go->position.x - GAME_CENTER_X) * (180.0f / M_PI);
+
+				alien->currentState = Alien::STATE_CIRCLE;
+			}
+			double circleSpeedModifier = distanceToMiddle != 0 ? alien->radius / distanceToMiddle : 1;
+			// Parameterized lemniscate of Gerono. Notice the axes have been flipped
+			alien->angle += fmod(dt * ALIEN_SPEED_INITIAL, 360);
+
+			go->position.y = alien->originY + 200  * alien->circularDirectionY *  cos(alien->angle * (M_PI / 180.0f)) ;
+			go->position.x = alien->originX + 150  * alien->circularDirectionX * sin(2 * alien->angle * (M_PI / 180.0f)) / 2 ;
+
+		}
+		break;
 		case Alien::STATE_INITIAL1:
 		{
 			if (distance <= alien->radius)
 			{
 				alien->originX = GAME_CENTER_X;
 				alien->originY = GAME_CENTER_Y;
-				angle = atan2(go->position.y - GAME_CENTER_Y, go->position.x - GAME_CENTER_X) * (180.0f / M_PI);
+				alien->angle = atan2(go->position.y - GAME_CENTER_Y, go->position.x - GAME_CENTER_X) * (180.0f / M_PI);
 
 				alien->currentState = Alien::STATE_CIRCLE;
 			}
@@ -191,7 +206,7 @@ private:
 			{
 				alien->originX = GAME_CENTER_X;
 				alien->originY = GAME_CENTER_Y;
-				angle = atan2(go->position.y - GAME_CENTER_Y, go->position.x - GAME_CENTER_X) * (180.0f / M_PI);
+				alien->angle = atan2(go->position.y - GAME_CENTER_Y, go->position.x - GAME_CENTER_X) * (180.0f / M_PI);
 
 				// Random time until return to STATE_CIRCLE
 				timeUntilReturn = engine->getElapsedTime() + (rand() % 15 + 5);
@@ -216,10 +231,10 @@ private:
 		} // STATE_CIRCLE_OUTER falls through to STATE_CIRCLE
 		case Alien::STATE_CIRCLE:
 		{
-			double circleSpeedModifier = distanceToMiddle != 0 ? alien->radius / distanceToMiddle : 1;
-			angle += fmod(dt * ALIEN_SPEED_CIRCLE * circleSpeedModifier, 360);
-			go->position.x = alien->originX + alien->radius * cos(angle * (M_PI / 180.0f));
-			go->position.y = alien->originY + alien->radius * sin(angle * (M_PI / 180.0f));
+			double circleSpeedModifier = distanceToMiddle != 0 ?  alien->radius / distanceToMiddle : 1;
+			alien->angle += fmod(dt * ALIEN_SPEED_CIRCLE * circleSpeedModifier, 360);
+			go->position.x = alien->originX + alien->radius * cos(alien->angle * (M_PI / 180.0f));
+			go->position.y = alien->originY + alien->radius * sin(alien->angle * (M_PI / 180.0f));
 		}
 		break;
 
@@ -255,7 +270,7 @@ private:
 
 	void ResizeAlien(double oldDistance, double newDistance, float dt)
 	{
-		double alienSizeModifier = 5.0f * dt;
+		double alienSizeModifier = 50.0f * dt;
 
 		// Only need to resize if position has changed
 		if (newDistance == oldDistance)
