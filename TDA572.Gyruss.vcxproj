@@ -27,7 +27,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\alien.h" />
-    <ClInclude Include="src\aliens_grid.h" />
+    <ClInclude Include="src\enemy_observer.h" />
     <ClInclude Include="src\alien_bomb.h" />
     <ClInclude Include="src\avancezlib.h" />
     <ClInclude Include="src\component.h" />

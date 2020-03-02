@@ -95,7 +95,6 @@ public:
 
 		time_fire_pressed = engine->getElapsedTime();
 
-		SDL_Log("fire!");
 		return true;
 	}
 };

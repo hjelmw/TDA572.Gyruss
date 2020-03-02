@@ -62,7 +62,7 @@
     <ClInclude Include="src\vector2D.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\aliens_grid.h">
+    <ClInclude Include="src\enemy_observer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

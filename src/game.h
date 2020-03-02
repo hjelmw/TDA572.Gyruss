@@ -11,7 +11,7 @@ private:
 
 	Player* player;
 	Sprite* life_sprite;
-	AliensGrid* aliens_grid;
+	EnemyObserver* aliens_grid;
 
 	ObjectPool<Rocket> rockets_pool;	// used to instantiate rockets
 	ObjectPool<Alien> aliens_pool;		// pool of aliens
@@ -63,11 +63,11 @@ public:
 			(*rocket)->AddComponent(render);
 		}
 
-		aliens_pool.Create(11);
+		aliens_pool.Create(20);
 		for (auto alien = aliens_pool.pool.begin(); alien != aliens_pool.pool.end(); alien++)
 		{
 			AlienBehaviorComponent* alien_behavior = new AlienBehaviorComponent();
-			alien_behavior->Create(engine, *alien, &game_objects, &bombs_pool);
+			alien_behavior->Create(engine, *alien, &game_objects, &bombs_pool, player);
 			RenderComponent* alien_render = new RenderComponent();
 			alien_render->Create(engine, *alien, &game_objects, "data/enemy_0.bmp");
 
@@ -99,11 +99,11 @@ public:
 			(*bomb)->AddComponent(bomb_render);
 		}
 
-		aliens_grid = new AliensGrid();
-		AliensGridBehaviourComponent* aliensgrid_behaviour = new AliensGridBehaviourComponent();
-		aliensgrid_behaviour->Create(engine, aliens_grid, &game_objects, &aliens_pool, &bombs_pool, player);
+		aliens_grid = new EnemyObserver();
+		EnemyObserverBehaviorComponent* aliens_behaviour = new EnemyObserverBehaviorComponent();
+		aliens_behaviour->Create(engine, aliens_grid, &game_objects, &aliens_pool, &bombs_pool, player);
 		aliens_grid->Create();
-		aliens_grid->AddComponent(aliensgrid_behaviour);
+		aliens_grid->AddComponent(aliens_behaviour);
 		
 		// Aliens shoud spawn immediately
 		game_objects.insert(aliens_grid);

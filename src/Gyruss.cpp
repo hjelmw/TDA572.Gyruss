@@ -8,23 +8,27 @@ const unsigned int	POINTS_PER_ALIEN           = 100;
 
 
 /* Player parameters */
-const float			FIRE_TIME_INTERVAL = 1.0f;
+const float			FIRE_TIME_INTERVAL = 0.7f;
 const float			PLAYER_SPEED       = 70.0f;
 const float			ROCKET_SPEED       = 600.0f;
 const unsigned int	MAX_NUM_ROCKETS    = 32;
 
 
 /* Alien ship parameters */
-const float			ALIEN_ACTION_INTERVAL = 5.0f;
-const float			ALIEN_SPEED_BASE      = 300.0f;
-const float			ALIEN_SPEED_CIRCLE    = 140.0f;
-const float			ALIEN_SIZE_SPEED      = 5.0f;
-const float			BOMB_SPEED            = 400.0f;
-const float			BOMB_TIME_INTERVAL    = 3.0f;
-const unsigned int	MAX_NUM_BOMBS         = 32;
+const float			ALIEN_ACTION_INTERVAL   = 1.2;
+const float			ALIEN_SPEED_BASE        = 400.0f;
+const float			ALIEN_SPEED_CIRCLE      = 20.0f;
+const float			ALIEN_SIZE_SPEED        = 5.0f;
+const float			BOMB_SPEED              = 400.0f;
+const float			ALIEN_FIRE_INTERVAL     = 0.2f;
+const unsigned int	MAX_NUM_BOMBS           = 32;
+const unsigned int	ALIEN_CONSECUTIVE_SHOTS = 6;
 
 
 /* Other enemy parameters */
+const int			ALIENS_IN_SWARM            = 15;
+const int			ALIENS_FIRE_SIMULTANEOUSLY = 6;
+
 const float			ASTEROID_TIME_INTERVAL = 10.0f;
 const float			ASTEROID_SPEED_BASE    = 10.0f;
 const float			ASTEROID_ACCELERATION  = 10.0f;
@@ -51,7 +55,7 @@ const float			game_speed    = 1.0f; // speed of the game; it is increased each t
 #include "player.h"
 #include "alien.h"
 #include "alien_bomb.h"
-#include "aliens_grid.h"
+#include "enemy_observer.h"
 #include "game.h"
 
 

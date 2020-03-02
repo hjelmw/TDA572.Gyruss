@@ -32,7 +32,6 @@ public:
 		float distance = sqrt(pow(playerPosition.x - position.x, 2) + pow(playerPosition.y - position.y, 2));
 		direction = (position - playerPosition) / distance;
 
-
 	}
 
 	virtual void Receive(Message m)
