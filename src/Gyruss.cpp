@@ -5,6 +5,7 @@ const unsigned int	MAX_NUM_GAME_OBJECTS       = 10000;
 const unsigned int	NUM_LIVES                  = 3;
 const unsigned int  POINTS_PER_ALIEN_CLUSTER   = 1000;
 const unsigned int	POINTS_PER_ALIEN           = 100;
+const unsigned int	AMOUNT_OF_STARS			   = 200;
 
 
 /* Player parameters */
@@ -18,7 +19,7 @@ const float         PLAYER_INVULNERABLE_TIME = 5.0f;
 /* Alien ship parameters */
 const float			ALIEN_ACTION_INTERVAL   = 1.0f;
 const float			ALIEN_SPEED_BASE        = 400.0f;
-const float			ALIEN_SPEED_INITIAL     = 80.0f;
+const float			ALIEN_SPEED_INITIAL     = 50.0f;
 const float			ALIEN_SPEED_CIRCLE      = 70.0f;
 const float			ALIEN_SIZE_SPEED        = 10.0f;
 const float			BOMB_SPEED              = 800.0f;
@@ -51,6 +52,7 @@ const float			game_speed    = 1.0f; // speed of the game; it is increased each t
 #include "game_object.h"
 #include "object_pool.h"
 #include "vector2D.h"
+#include "Starfield.h"
 
 #include "stdio.h"
 #include <set>
@@ -59,7 +61,7 @@ const float			game_speed    = 1.0f; // speed of the game; it is increased each t
 #include "player.h"
 #include "alien.h"
 #include "alien_bomb.h"
-#include "enemy_observer.h"
+#include "EnemyController.h"
 #include "game.h"
 
 

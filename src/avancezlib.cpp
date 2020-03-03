@@ -168,6 +168,32 @@ void AvancezLib::drawText(int x, int y, const char *msg)
 	SDL_FreeSurface(surface);    // Free up surface
 }
 
+void AvancezLib::drawPoint(int x, int y, SDL_Rect color)
+{
+	SDL_SetRenderDrawColor(renderer, color.x, color.y, color.w, color.h);
+	
+	// Draw a 13 pixel thick point
+	SDL_RenderDrawPoint(renderer, x,     y);
+	
+	SDL_RenderDrawPoint(renderer, x + 1, y);
+	SDL_RenderDrawPoint(renderer, x - 1, y);
+	SDL_RenderDrawPoint(renderer, x + 2, y);
+	SDL_RenderDrawPoint(renderer, x - 2, y);
+
+	SDL_RenderDrawPoint(renderer, x,     y + 1);
+	SDL_RenderDrawPoint(renderer, x,     y - 1);
+	SDL_RenderDrawPoint(renderer, x,     y + 2);
+	SDL_RenderDrawPoint(renderer, x,     y - 2);
+
+	SDL_RenderDrawPoint(renderer, x + 1, y + 1);
+	SDL_RenderDrawPoint(renderer, x - 1, y - 1);
+	SDL_RenderDrawPoint(renderer, x + 2, y + 2);
+	SDL_RenderDrawPoint(renderer, x - 2, y - 2);
+
+
+
+}
+
 Sprite* AvancezLib::createSprite(const char *name)
 {
 	SDL_Texture *spriteTexture = IMG_LoadTexture(renderer, name);

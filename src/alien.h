@@ -179,7 +179,6 @@ private:
 			double circleSpeedModifier = distanceToMiddle != 0 ? alien->radius / distanceToMiddle : 1;
 			// Parameterized lemniscate of Gerono. Notice the axes have been flipped
 			alien->angle += fmod(dt * ALIEN_SPEED_INITIAL, 360);
-
 			go->position.y = alien->originY + 200  * alien->circularDirectionY *  cos(alien->angle * (M_PI / 180.0f)) ;
 			go->position.x = alien->originX + 150  * alien->circularDirectionX * sin(2 * alien->angle * (M_PI / 180.0f)) / 2 ;
 

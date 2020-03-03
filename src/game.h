@@ -11,12 +11,14 @@ private:
 
 	Player* player;
 	Sprite* life_sprite;
-	EnemyObserver* aliens_grid;
+	EnemyController* aliens_grid;
 
 	ObjectPool<Rocket> rockets_pool;	// used to instantiate rockets
 	ObjectPool<Alien> aliens_pool;		// pool of aliens
 
 	ObjectPool<AlienBomb> bombs_pool;
+
+	Starfield star_field;
 
 	bool gameOver = false;
 	bool canSpawn = true;
@@ -107,8 +109,8 @@ public:
 			(*bomb)->AddComponent(bomb_render);
 		}
 
-		aliens_grid = new EnemyObserver();
-		EnemyObserverBehaviorComponent* aliens_behaviour = new EnemyObserverBehaviorComponent();
+		aliens_grid = new EnemyController();
+		EnemyControllerBehaviorComponent* aliens_behaviour = new EnemyControllerBehaviorComponent();
 		aliens_behaviour->Create(engine, aliens_grid, &game_objects, &aliens_pool, &bombs_pool, player);
 		aliens_grid->Create();
 		aliens_grid->AddComponent(aliens_behaviour);
@@ -120,6 +122,8 @@ public:
 	virtual void Init()
 	{
 		player->Init();
+		star_field.Init(engine, AMOUNT_OF_STARS);
+
 		spawnDelay = engine->getElapsedTime() + ALIEN_SPAWN_TIME;
 		enabled = true;
 	}
@@ -133,6 +137,9 @@ public:
 			engine->quit();
 		}
 
+
+
+
 		if (canSpawn && spawnLeft > 0 && spawnDelay - engine->getElapsedTime() <= 0)
 		{
 			// Spawns 4 aliens
@@ -142,6 +149,10 @@ public:
 			canSpawn = spawnLeft > 0 ? true : false;
 			spawnDelay = engine->getElapsedTime() + ALIEN_SPAWN_TIME;
 		}
+
+
+		star_field.DrawStars(dt);
+
 
 		for (auto go = game_objects.begin(); go != game_objects.end(); go++)
 			(*go)->Update(dt);

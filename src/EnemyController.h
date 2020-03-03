@@ -1,4 +1,4 @@
-class EnemyObserverBehaviorComponent : public Component
+class EnemyControllerBehaviorComponent : public Component
 {
 	float time_bomb_launched;
 	float time_alien_action;
@@ -9,7 +9,7 @@ class EnemyObserverBehaviorComponent : public Component
 	Player* player;
 
 public:
-	virtual ~EnemyObserverBehaviorComponent() {}
+	virtual ~EnemyControllerBehaviorComponent() {}
 
 	virtual void Create(AvancezLib* engine, GameObject* go, std::set<GameObject*>* game_objects, ObjectPool<Alien>* aliens_pool, ObjectPool<AlienBomb>* bombs_pool, Player* player)
 	{
@@ -28,6 +28,7 @@ public:
 		short k = 1;
 
 		// Spawn 4 aliens in each corner
+		// Currently very ugly
 		for (int i = 0; i < 4; i++)
 		{
 			auto alien = aliens_pool->FirstAvailable();
@@ -37,8 +38,6 @@ public:
 			if(j == -1)
 				k *= -1;
 		}
-
-
 
 		change_direction = false;
 	}
@@ -102,7 +101,8 @@ public:
 					AlienBomb* bomb = bombs_pool->FirstAvailable();
 					if (bomb != NULL)
 					{
-						bomb->Init(player->position, GAME_CENTER_X, GAME_CENTER_Y);
+						Vector2D randomPosNearPlayer(player->position.x + rand() % 100, player->position.y + rand() % 100);
+						bomb->Init(randomPosNearPlayer, GAME_CENTER_X, GAME_CENTER_Y);
 						game_objects->insert(bomb);
 					}
 					SDL_Log("Alien::Fire2");
@@ -160,11 +160,11 @@ public:
 
 
 
-class EnemyObserver : public GameObject
+class EnemyController : public GameObject
 {
 public:
 
-	virtual ~EnemyObserver() { SDL_Log("AliensGrid::~AliensGrid"); }
+	virtual ~EnemyController() { SDL_Log("AliensGrid::~AliensGrid"); }
 
 
 

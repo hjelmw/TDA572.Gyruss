@@ -47,6 +47,9 @@ public:
 	// Draws the given text.
 	void drawText(int x, int y, const char* msg);
 
+	// Draws point on screen
+	void drawPoint(int x, int y, SDL_Rect color);
+
 	// Return the total time spent in the game, in seconds.
 	float getElapsedTime();
 

@@ -30,6 +30,9 @@
     <ClCompile Include="src\sprite.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\Starfield.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\game.h">
@@ -62,7 +65,10 @@
     <ClInclude Include="src\vector2D.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\enemy_observer.h">
+    <ClInclude Include="src\Starfield.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\EnemyController.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
