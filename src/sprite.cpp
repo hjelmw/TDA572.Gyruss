@@ -1,4 +1,4 @@
-#include "avancezlib.h"
+#include "Sprite.hpp"
 
 Sprite::Sprite(SDL_Renderer* renderer, SDL_Texture* texture)
 {

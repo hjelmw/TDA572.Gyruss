@@ -1,5 +1,15 @@
 #pragma once
 
+//////////////////////////////////////////////////////////////
+//						ObjectPool
+// \brief Particle system for creating a field of pixels that
+//			that simulate a galaxy zooming towards the player.	
+//	
+// \params AMOUNT_OF_STARS
+// \see Game.cpp
+/////////////////////////////////////////////////////////////
+
+
 #include <vector>
 #include  "SDL.h"
 

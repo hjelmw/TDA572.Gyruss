@@ -1,6 +1,10 @@
-#include "component.h"
-#include "game_object.h"
-#include "avancezlib.h"
+
+#include "ObjectPool.hpp"
+#include "GameObject.hpp"
+#include "Avancezlib.hpp"
+#include "Sprite.hpp"
+
+#include "Component.hpp"
 
 void Component::Create(AvancezLib * engine, GameObject * go, std::set<GameObject*>* game_objects)
 {
@@ -13,7 +17,7 @@ void RenderComponent::Create(AvancezLib * engine, GameObject * go, std::set<Game
 {
 	Component::Create(engine, go, game_objects);
 
-	sprite = engine->createSprite(sprite_name);
+	sprite = engine->CreateSprite(sprite_name);
 }
 
 void RenderComponent::Update(float dt)

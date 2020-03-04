@@ -19,26 +19,35 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\avancezlib.cpp" />
-    <ClCompile Include="src\component.cpp" />
-    <ClCompile Include="src\game_object.cpp" />
-    <ClCompile Include="src\Gyruss.cpp" />
-    <ClCompile Include="src\sprite.cpp" />
-    <ClCompile Include="src\Starfield.cpp" />
+    <ClInclude Include="src\Alien.hpp" />
+    <ClInclude Include="src\AlienBomb.hpp" />
+    <ClInclude Include="src\Avancezlib.hpp" />
+    <ClInclude Include="src\Common.hpp" />
+    <ClInclude Include="src\Component.hpp" />
+    <ClInclude Include="src\EnemyController.hpp" />
+    <ClInclude Include="src\Game.hpp" />
+    <ClInclude Include="src\GameObject.hpp" />
+    <ClInclude Include="src\ObjectPool.hpp" />
+    <ClInclude Include="src\Player.hpp" />
+    <ClInclude Include="src\Rocket.hpp" />
+    <ClInclude Include="src\Sprite.hpp" />
+    <ClInclude Include="src\Starfield.hpp" />
+    <ClInclude Include="src\Vector2D.hpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\alien.h" />
-    <ClInclude Include="src\EnemyController.h" />
-    <ClInclude Include="src\alien_bomb.h" />
-    <ClInclude Include="src\avancezlib.h" />
-    <ClInclude Include="src\component.h" />
-    <ClInclude Include="src\game.h" />
-    <ClInclude Include="src\game_object.h" />
-    <ClInclude Include="src\object_pool.h" />
-    <ClInclude Include="src\player.h" />
-    <ClInclude Include="src\rocket.h" />
-    <ClInclude Include="src\Starfield.h" />
-    <ClInclude Include="src\vector2D.h" />
+    <ClCompile Include="src\Alien.cpp" />
+    <ClCompile Include="src\AlienBomb.cpp" />
+    <ClCompile Include="src\Avancezlib.cpp" />
+    <ClCompile Include="src\Common.cpp" />
+    <ClCompile Include="src\Component.cpp" />
+    <ClCompile Include="src\EnemyController.cpp" />
+    <ClCompile Include="src\Game.cpp" />
+    <ClCompile Include="src\GameObject.cpp" />
+    <ClCompile Include="src\Gyruss.cpp" />
+    <ClCompile Include="src\Player.cpp" />
+    <ClCompile Include="src\Rocket.cpp" />
+    <ClCompile Include="src\Sprite.cpp" />
+    <ClCompile Include="src\Starfield.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>

@@ -1,12 +1,25 @@
 #pragma once
 
-// GameObject represents objects which moves are drawn
+//////////////////////////////////////////////////////////////
+//						GameObject
+// \brief A game object is an entity that is manipulated and drawn on the screen
+//			All game entities like player, alien etc derive from this class
+//
+// \see Game.cpp
+/////////////////////////////////////////////////////////////
+
+
+
 #include <vector>
-#include "vector2D.h"
+#include "Vector2D.hpp"
+
+
+
 
 enum Message { HIT, ALIEN_HIT, GAME_OVER, LEVEL_WIN, NO_MSG, QUIT, ALIENS_MOVE_GRID };
 class Component;
 
+// GameObject represents objects which moves are drawn
 class GameObject
 {
 protected:

@@ -1,12 +1,7 @@
-#include "avancezlib.h"
-#include "SDL.h"
-#include "SDL_ttf.h"
-#include <SDL_image.h>
-#include <string>     // std::string, std::to_string
-#include <iostream>
-#include <sstream>
 
-AvancezLib::KeyStatus keyStatus;
+#include "avancezlib.hpp"
+
+
 
 // ------------------ ENGINE ---------------------------
 bool AvancezLib::Init(int width, int height)
@@ -46,7 +41,7 @@ bool AvancezLib::Init(int width, int height)
 	}
 
 	// initialize the keys
-	key.fire = false;	key.left = false;	key.right = false;
+	keyStatus.fire = false;	keyStatus.left = false;	keyStatus.right = false; keyStatus.esc = false;
 
 	//Initialize renderer color
 	SDL_SetRenderDrawColor(renderer, 0xFF, 0xFF, 0xFF, 0xFF);
@@ -70,7 +65,7 @@ void AvancezLib::clearWindow()
 	SDL_RenderClear(renderer);
 }
 
-void AvancezLib::destroy()
+void AvancezLib::Destroy()
 {
 	SDL_DestroyTexture(texture);
 	SDL_FreeSurface(surface);
@@ -83,7 +78,7 @@ void AvancezLib::destroy()
 
 void AvancezLib::quit()
 {
-	destroy();
+	Destroy();
 	SDL_Quit();
 	running = false;
 }
@@ -114,7 +109,7 @@ void AvancezLib::ProcessInput()
 				keyStatus.fire = true;
 				break;
 			case SDLK_LEFT:
-  				keyStatus.left = true;
+				keyStatus.left = true;
 				break;
 			case SDLK_RIGHT:
 				keyStatus.right = true;
@@ -152,7 +147,7 @@ void AvancezLib::getKeyStatus(KeyStatus& keys)
 	keys = keyStatus;
 }
 
-void AvancezLib::drawText(int x, int y, const char *msg)
+void AvancezLib::DrawText(int x, int y, const char *msg)
 {
 	surface = TTF_RenderText_Solid(font, msg, color);
 	texture = SDL_CreateTextureFromSurface(renderer, surface);
@@ -168,7 +163,7 @@ void AvancezLib::drawText(int x, int y, const char *msg)
 	SDL_FreeSurface(surface);    // Free up surface
 }
 
-void AvancezLib::drawPoint(int x, int y, SDL_Rect color)
+void AvancezLib::DrawPoint(int x, int y, SDL_Rect color)
 {
 	SDL_SetRenderDrawColor(renderer, color.x, color.y, color.w, color.h);
 	
@@ -189,12 +184,9 @@ void AvancezLib::drawPoint(int x, int y, SDL_Rect color)
 	SDL_RenderDrawPoint(renderer, x - 1, y - 1);
 	SDL_RenderDrawPoint(renderer, x + 2, y + 2);
 	SDL_RenderDrawPoint(renderer, x - 2, y - 2);
-
-
-
 }
 
-Sprite* AvancezLib::createSprite(const char *name)
+Sprite* AvancezLib::CreateSprite(const char *name)
 {
 	SDL_Texture *spriteTexture = IMG_LoadTexture(renderer, name);
 	return new Sprite(renderer, spriteTexture);

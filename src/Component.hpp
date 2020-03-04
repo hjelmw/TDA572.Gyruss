@@ -1,7 +1,18 @@
 #pragma once
 
+
+//////////////////////////////////////////////////////////////
+//						Component
+// \brief A component iterates over each game object and tells its corresponding subcomponents to update
+//			This can be things such as collision detection, movement, rendering
+//	
+// \see Game
+/////////////////////////////////////////////////////////////
+
+
+
 #include <set>
-#include "object_pool.h"
+#include "ObjectPool.hpp"
 
 class GameObject;
 class AvancezLib;

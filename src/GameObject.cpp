@@ -1,6 +1,6 @@
-#include "game_object.h"
-#include "component.h"
-#include "avancezlib.h"
+#include "GameObject.hpp"
+#include "Component.hpp"
+#include "Avancezlib.hpp"
 
 void GameObject::Create()
 {

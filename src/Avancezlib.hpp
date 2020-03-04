@@ -1,26 +1,21 @@
 #pragma once
 
+
+//////////////////////////////////////////////////////////////
+//					AvancezLib
+// \brief Game engine. Renders object on the screen
+//	
+// \params GAME_CENTER_X, GAME_CENTER_Y, ENEMY_ACTION_INTERVAL
+// \see Game
+/////////////////////////////////////////////////////////////
+
 #include "SDL.h"
 #include "SDL_ttf.h"
-
-class Sprite
-{
-private:
-	SDL_Renderer * renderer;
-	SDL_Texture * texture;
-
-public:
-	SDL_Rect* spriteDim;
-
-	Sprite(SDL_Renderer * renderer, SDL_Texture * texture);
-
-	// Destroys the sprite instance
-	void destroy();
-
-	// Draw the sprite at the given position.
-	// Valid coordinates are between (0,0) (upper left) and (width-32, height-32) (lower right).
-	void draw(int x, int y, int w, int h, int angle);
-};
+#include "SDL_image.h"
+#include "Sprite.hpp"
+#include <string>     // std::string, std::to_string
+#include <iostream>
+#include <sstream>
 
 
 class AvancezLib
@@ -36,19 +31,19 @@ public:
 	void Render();
 
 	// Destroys the avancez library instance
-	void destroy();
+	void Destroy();
 
 	// Destroys the avancez library instance and exits
 	void quit();
 
 	// Create a sprite given a string.
-	Sprite* createSprite(const char* name);
+	Sprite* CreateSprite(const char* name);
 
 	// Draws the given text.
-	void drawText(int x, int y, const char* msg);
+	void DrawText(int x, int y, const char* msg);
 
 	// Draws point on screen
-	void drawPoint(int x, int y, SDL_Rect color);
+	void DrawPoint(int x, int y, SDL_Rect color);
 
 	// Return the total time spent in the game, in seconds.
 	float getElapsedTime();
@@ -64,6 +59,7 @@ public:
 		bool right; // right arrow
 		bool esc; // escape button
 	};
+
 	// Returns the keyboard status. If a flag is set, the corresponding key is being held down.
 	void getKeyStatus(KeyStatus& keys);
 
@@ -82,7 +78,7 @@ private:
 
 	TTF_Font* font;
 
-	KeyStatus key;
+	KeyStatus keyStatus;
 
 	bool running;
 

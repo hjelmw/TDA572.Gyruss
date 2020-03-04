@@ -1,4 +1,4 @@
-#include "Starfield.h"
+#include "Starfield.hpp"
 
 void Starfield::Init(AvancezLib* engine, int amount) {
 	this->engine = engine;
@@ -25,7 +25,7 @@ void Starfield::DrawStars(float dt)
 
 		// Ask engine to draw star
 		SDL_Rect starColor = { star.z + 200, star.z + 200, star.z + 200, 0xFF };
-		engine->drawPoint(star.x, star.y, starColor);
+		engine->DrawPoint(star.x, star.y, starColor);
 
 	}
 }
