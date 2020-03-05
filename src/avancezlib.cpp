@@ -62,14 +62,14 @@ bool AvancezLib::Init(int width, int height)
 	return true;
 }
 
-void AvancezLib::swapBuffers()
+void AvancezLib::SwapBuffers()
 {
 	SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0);
 	SDL_GL_SwapWindow(window);
 	SDL_RenderPresent(renderer);
 }
 
-void AvancezLib::clearWindow()
+void AvancezLib::ClearWindow()
 {
 	SDL_RenderClear(renderer);
 }
@@ -85,14 +85,14 @@ void AvancezLib::Destroy()
 	TTF_Quit();
 }
 
-void AvancezLib::quit()
+void AvancezLib::Quit()
 {
 	Destroy();
 	SDL_Quit();
 	running = false;
 }
 
-bool AvancezLib::isRunning() 
+bool AvancezLib::IsRunning() 
 {
 	return running;
 }
@@ -147,11 +147,11 @@ void AvancezLib::ProcessInput()
 
 void AvancezLib::Render()
 {
-	swapBuffers();
-	clearWindow();
+	SwapBuffers();
+	ClearWindow();
 }
 
-void AvancezLib::getKeyStatus(KeyStatus& keys)
+void AvancezLib::GetKeyStatus(KeyStatus& keys)
 {
 	keys = keyStatus;
 }
@@ -176,7 +176,7 @@ void AvancezLib::DrawPoint(int x, int y, SDL_Rect color)
 {
 	SDL_SetRenderDrawColor(renderer, color.x, color.y, color.w, color.h);
 	
-	// Draw a 13 pixel thick point
+	// DrawSprite a 13 pixel thick point
 	SDL_RenderDrawPoint(renderer, x,     y);
 	
 	SDL_RenderDrawPoint(renderer, x + 1, y);
@@ -195,7 +195,7 @@ Sprite* AvancezLib::CreateSprite(const char *name)
 	return new Sprite(renderer, spriteTexture);
 }
 
-float AvancezLib::getElapsedTime()
+float AvancezLib::GetElapsedTime()
 {
 	return SDL_GetTicks() / 1000.0f;
 }

@@ -24,9 +24,9 @@ public:
 	Sprite(SDL_Renderer* renderer, SDL_Texture* texture);
 
 	// Destroys the sprite instance
-	void destroy();
+	void Destroy();
 
-	// Draw the sprite at the given position.
+	// DrawSprite the sprite at the given position.
 	// Valid coordinates are between (0,0) (upper left) and (width-32, height-32) (lower right).
-	void draw(int x, int y, int w, int h, int angle);
+	void DrawSprite(int x, int y, int w, int h, int angle);
 };

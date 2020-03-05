@@ -37,7 +37,6 @@ public:
 	// Player can move left, right or fire rockets towards the middle of the screen
 	virtual void Update(float dt);
 
-
 	// move the player left or right
 	void Move(float move);
 
@@ -52,10 +51,12 @@ public:
 // the main player
 class Player : public GameObject
 {
-	float playerInvulnerable;
 public:
 
 	int lives;	// it's game over when goes below zero 
+
+	bool invulnerable;
+	float invulnerabilityTime;
 
 	virtual ~Player();
 

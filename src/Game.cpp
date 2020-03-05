@@ -26,41 +26,50 @@ void Game::Create(AvancezLib* engine)
 	player_behaviour->Create(engine, playerSprite, &game_objects, &rocketsPool);
 	RenderComponent* player_render = new RenderComponent();
 	player_render->Create(engine, playerSprite, &game_objects, "data/player.png");
+	
+	// Player collision
+	// Collision with bomb reduces life
 	CollideComponent* player_bomb_collision = new CollideComponent();
 	player_bomb_collision->Create(engine, playerSprite, &game_objects, reinterpret_cast<ObjectPool<GameObject>*>(&bombsPool));
+	// Collision with alien reduces life
 	CollideComponent* player_alien_collision = new CollideComponent();
 	player_alien_collision->Create(engine, playerSprite, &game_objects, reinterpret_cast<ObjectPool<GameObject>*>(&aliensPool));
-
+	// Collision with asteroid reduces life
+	CollideComponent* player_asteroid_collision = new CollideComponent();
+	player_asteroid_collision->Create(engine, playerSprite, &game_objects, reinterpret_cast<ObjectPool<GameObject>*>(&asteroidsPool));
 
 	playerSprite->Create();
 	playerSprite->AddComponent(player_behaviour);
 	playerSprite->AddComponent(player_render);
 	playerSprite->AddComponent(player_bomb_collision);
 	playerSprite->AddComponent(player_alien_collision);
+	playerSprite->AddComponent(player_asteroid_collision);
 	playerSprite->AddReceiver(this);
 	game_objects.insert(playerSprite);
-
 
 	// Player rocket pool
 	rocketsPool.Create(MAX_NUM_ROCKETS);
 	for (auto rocket = rocketsPool.pool.begin(); rocket != rocketsPool.pool.end(); rocket++)
 	{
-		RocketBehaviourComponent* behaviour = new RocketBehaviourComponent();
-		behaviour->Create(engine, *rocket, &game_objects);
-		RenderComponent* render = new RenderComponent();
-		render->Create(engine, *rocket, &game_objects, "data/rocket.bmp");
+		RocketBehaviourComponent* rocket_behaviour = new RocketBehaviourComponent();
+		rocket_behaviour->Create(engine, *rocket, &game_objects);
+		RenderComponent* rocket_render = new RenderComponent();
+		rocket_render->Create(engine, *rocket, &game_objects, "data/projectile2.png");
 
 		(*rocket)->Create();
-		(*rocket)->AddComponent(behaviour);
-		(*rocket)->AddComponent(render);
+		(*rocket)->AddComponent(rocket_behaviour);
+		(*rocket)->AddComponent(rocket_render);
 	}
 
 
 	aliensPool.Create(ALIENS_AMOUNT);
 	for (auto alien = aliensPool.pool.begin(); alien != aliensPool.pool.end(); alien++)
 	{
+		// Alien behavior component (State Machine)
 		AlienBehaviorComponent* alien_behavior = new AlienBehaviorComponent();
 		alien_behavior->Create(engine, *alien, &game_objects, &bombsPool, playerSprite);
+
+		// Alien renderer
 		RenderComponent* alien_render = new RenderComponent();
 		alien_render->Create(engine, *alien, &game_objects, "data/enemy_1.png");
 
@@ -72,6 +81,7 @@ void Game::Create(AvancezLib* engine)
 		CollideComponent* alien_rocket_collision = new CollideComponent();
 		alien_rocket_collision->Create(engine, *alien, &game_objects, (ObjectPool<GameObject>*) & rocketsPool);
 
+		// Disables if alien goes out of screen
 		BoxCollideComponent* alien_box_collision = new BoxCollideComponent();
 		alien_box_collision->Create(engine, *alien, engine->screenHeight, engine->screenWidth);
 
@@ -79,6 +89,7 @@ void Game::Create(AvancezLib* engine)
 		(*alien)->AddComponent(alien_render);
 		(*alien)->AddComponent(alien_player_collision);
 		(*alien)->AddComponent(alien_rocket_collision);
+		(*alien)->AddComponent(alien_box_collision);
 		(*alien)->AddReceiver(this);
 	}
 
@@ -88,8 +99,10 @@ void Game::Create(AvancezLib* engine)
 	{
 		AlienBombBehaviorComponent* bomb_behaviour = new AlienBombBehaviorComponent();
 		bomb_behaviour->Create(engine, *bomb, &game_objects);
+
 		RenderComponent* bomb_render = new RenderComponent();
-		bomb_render->Create(engine, *bomb, &game_objects, "data/bomb.bmp");
+		bomb_render->Create(engine, *bomb, &game_objects, "data/missile2.png");
+
 		BoxCollideComponent* bomb_box_collision = new BoxCollideComponent();
 		bomb_box_collision->Create(engine, *bomb, engine->screenHeight, engine->screenWidth);
 
@@ -99,21 +112,30 @@ void Game::Create(AvancezLib* engine)
 		(*bomb)->AddComponent(bomb_render);
 	}
 
+
 	asteroidsPool.Create(ASTEROIDS_AMOUNT);
 	for (auto asteroid = asteroidsPool.pool.begin(); asteroid != asteroidsPool.pool.end(); asteroid++)
 	{
 		AsteroidBehaviourComponent* asteroid_behaviour = new AsteroidBehaviourComponent();
 		asteroid_behaviour->Create(engine, *asteroid, &game_objects);
+		
 		RenderComponent* asteroids_render = new RenderComponent();
 		asteroids_render->Create(engine, *asteroid, &game_objects, "data/asteroid.png");
+		
+		// Asteroid player collision
+		CollideComponent* asteroid_rocket_collision = new CollideComponent();
+		asteroid_rocket_collision->Create(engine, *asteroid, &game_objects, (ObjectPool<GameObject>*) & rocketsPool);
+
 		BoxCollideComponent* asteroid_box_collision = new BoxCollideComponent();
 		asteroid_box_collision->Create(engine, *asteroid, engine->screenHeight, engine->screenWidth);
 
 		(*asteroid)->Create();
 		(*asteroid)->AddComponent(asteroid_box_collision);
+		(*asteroid)->AddComponent(asteroid_rocket_collision);
 		(*asteroid)->AddComponent(asteroid_behaviour);
 		(*asteroid)->AddComponent(asteroids_render);
 	}
+
 
 	aliens_grid = new EnemyController();
 	EnemyControllerBehaviorComponent* aliens_behaviour = new EnemyControllerBehaviorComponent();
@@ -125,59 +147,69 @@ void Game::Create(AvancezLib* engine)
 	game_objects.insert(aliens_grid);
 
 
-	// Load UI assets
+	// Load UI assets and other graphics
 	planetSprite = engine->CreateSprite("data/planet.png");
 	lifeSprite = engine->CreateSprite("data/life.png");
+	shieldSprite = engine->CreateSprite("data/shield_min.png");
+	starField.Init(engine, AMOUNT_OF_STARS);
 }
 
 void Game::Init()
 {
 	playerSprite->Init();
-	starField.Init(engine, AMOUNT_OF_STARS);
-
-	spawnDelay = engine->getElapsedTime() + ALIENS_SPAWN_TIME;
+	spawnDelay = engine->GetElapsedTime() + ALIENS_SPAWN_TIME;
 	enabled = true;
 }
 
 void Game::Update(float dt)
 {
+
 	AvancezLib::KeyStatus keys;
-	engine->getKeyStatus(keys);
+	engine->GetKeyStatus(keys);
 	if (keys.esc) {
 		Destroy();
-		engine->quit();
+		engine->Quit();
 	}
 	
-
-
-	// Draw UI elements
+	// DrawSprite UI elements
 	Draw(dt);
 
-	// Can we spawn more aliens
-	if (canSpawn && spawnLeft > 0 && spawnDelay - engine->getElapsedTime() <= 0)
+	// Can we spawn more aliens (new level)
+	if (canSpawn && spawnLeft > 0 && spawnDelay - engine->GetElapsedTime() <= 0)
 	{
 		// Spawns 4 aliens
 		aliens_grid->Init();
 
 		spawnLeft -= 8;
 		canSpawn = spawnLeft > 0 ? true : false;
-		spawnDelay = engine->getElapsedTime() + ALIENS_SPAWN_TIME;
+		spawnDelay = engine->GetElapsedTime() + ALIENS_SPAWN_TIME;
 	}
 
 	// Update game objects
 	for (auto go = game_objects.begin(); go != game_objects.end(); go++)
 		(*go)->Update(dt);
 
+	if (gameOver)
+	{
+		SDL_Event quitEvent;
+		while (SDL_WaitEvent(&quitEvent) != 0 && quitEvent.type != SDL_QUIT);
+	}
+
 }
 
-// Draw UI and text elements here
+// DrawSprite UI and text elements here
 void Game::Draw(float dt)
 {
+	if (gameOver)
+	{
+		engine->DrawText(GAME_CENTER_X - 100, engine->screenHeight - 200, "*** G A M E  O V E R ***");		
+
+	}
 	// Update starfield
 	starField.DrawStars(dt);
 	
-	// Draw planet in middle of screen
-	planetSprite->draw(GAME_CENTER_X - 50, GAME_CENTER_Y - 40, 100, 100, 0);
+	// DrawSprite planet in middle of screen
+	planetSprite->DrawSprite(GAME_CENTER_X - 50, GAME_CENTER_Y - 40, 100, 100, 0);
 
 	// UI Text
 	std::stringstream scoreText;
@@ -188,13 +220,19 @@ void Game::Draw(float dt)
 	levelText.str("");
 	levelText << "Level: " << level;
 
+	// Draw shield around player if recently hit
+	if (playerSprite->invulnerable)
+	{
+		shieldSprite->DrawSprite(playerSprite->position.x - 10, playerSprite->position.y - 10, 70, 70, 0);
+	}
+
 	// Draw UI
 	engine->DrawText((engine->screenWidth / 2) - 50, 15, "Gyruss");
 	engine->DrawText((engine->screenWidth) - 170, 15, levelText.str().c_str());
 	engine->DrawText(10, 15, scoreText.str().c_str());
 	for (int i = 0; i < playerSprite->lives; i++)
 	{
-		lifeSprite->draw(i * 40 + 20, engine->screenHeight - 60, 35, 35, 0);
+		lifeSprite->DrawSprite(i * 40 + 20, engine->screenHeight - 60, 35, 35, 0);
 	}
 }
 
@@ -202,7 +240,6 @@ void Game::Receive(Message m)
 {
 	if (m == GAME_OVER)
 	{
-		engine->DrawText(200, 400, "--- Game Over ---");
 		gameOver = true;
 	}
 
@@ -221,7 +258,7 @@ void Game::Destroy()
 	for (auto go = game_objects.begin(); go != game_objects.end(); go++)
 		(*go)->Destroy();
 
-	lifeSprite->destroy();
+	lifeSprite->Destroy();
 
 	game_objects.clear();
 	delete playerSprite;

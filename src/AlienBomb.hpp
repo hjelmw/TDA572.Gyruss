@@ -26,8 +26,9 @@ public:
 class AlienBomb : public GameObject
 {
 public:
-	bool changeDirection;
 
-	virtual void Init(Vector2D playerPosition, double xPos, double yPos);
+	float bombSpeed;
+
+	virtual void Init(Vector2D playerPosition, double speed, double xPos, double yPos);
 	virtual void Receive(Message m);
 };

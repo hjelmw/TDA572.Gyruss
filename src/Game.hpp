@@ -37,8 +37,10 @@ private:
 	AvancezLib* engine;
 
 	Player* playerSprite;
+
 	Sprite* lifeSprite;
 	Sprite* planetSprite;
+	Sprite* shieldSprite;
 	EnemyController* aliens_grid;
 	Starfield starField;
 
@@ -62,10 +64,10 @@ public:
 
 	virtual void Init();
 
-	// Update game
+	// Updates the game state and repositions sprites for rendering
 	virtual void Update(float dt);
 
-	// Draw UI and text elements here
+	// DrawSprite UI and text elements here
 	virtual void Draw(float dt);
 
 	virtual void Destroy();

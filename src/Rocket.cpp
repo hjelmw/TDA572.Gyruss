@@ -37,8 +37,8 @@ void RocketBehaviourComponent::MoveRocket(float dt)
 
 void RocketBehaviourComponent::ShrinkRocket(float dt)
 {
-	go->width -= (ROCKET_SPEED / 19) * dt;
-	go->height -= (ROCKET_SPEED / 19) * dt;
+	go->width -= (ROCKET_SPEED / 20) * dt;
+	go->height -= (ROCKET_SPEED / 20) * dt;
 }
 
 
@@ -47,13 +47,16 @@ void Rocket::Init(double xPos, double yPos)
 {
 	position.x = xPos;
 	position.y = yPos;
-	width = 22;
-	height = 22;
+	width = 32;
+	height = 32;
 
 	// quick maths
 	Vector2D end(GAME_CENTER_X, GAME_CENTER_Y);
 	float distance = sqrt(pow(end.x - position.x, 2) + pow(end.y - position.y, 2));
 	direction = (position - Vector2D(GAME_CENTER_X, GAME_CENTER_Y)) / distance;
+
+	this->angle = atan2(GAME_CENTER_Y - this->position.y, GAME_CENTER_X - this->position.x) * (180.0f / M_PI) + 90;
+
 
 	//SDL_Log("Rocket::Init");
 	GameObject::Init();
@@ -67,7 +70,7 @@ void Rocket::Receive(Message m)
 	if (m == HIT)
 	{
 		enabled = false;
-		//SDL_Log("Rocket::Hit");
+		SDL_Log("Rocket::Hit");
 	}
 }
 

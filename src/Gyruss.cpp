@@ -1,8 +1,16 @@
 
+//////////////////////////////////////////////////////////////
+//						Gyruss
+// \brief The main file. Comprised of an engine and game logic
+//			Try it out :)
+//
+// \see Game.cpp
+/////////////////////////////////////////////////////////////
+
+
+
 #include "Avancezlib.hpp"
 #include "Game.hpp"
-
-
 
 int main(int argc, char** argv)
 {
@@ -13,12 +21,12 @@ int main(int argc, char** argv)
 	game.Create(&engine);
 	game.Init();
 
-	float lastTime = engine.getElapsedTime();
+	float lastTime = engine.GetElapsedTime();
 
-	while (engine.isRunning())
+	while (engine.IsRunning())
 	{
 		// Frametime
-		float newTime = engine.getElapsedTime();
+		float newTime = engine.GetElapsedTime();
 		float dt = newTime - lastTime;
 		dt = dt * 1.0f;
 		lastTime = newTime;

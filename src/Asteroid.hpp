@@ -1,19 +1,23 @@
 #pragma once
-#pragma once
+
 
 //////////////////////////////////////////////////////////////
-//					AlienBomb
-// \brief Enemy projectiles. Shot by at playerSprite when alien in state
-//			 STATE_FIRE1, STATE_FIRE2
-//	
-// \params BOMB_SPEED
-// \see Game, Alien, EnemyController
+//						Asteroid
+// \brief Asteroids hurl towards the outer edges of the game.
+//			They also absors bullets
+//
+// \params	GAME_CENTER_X, GAME_CENTER_Y, ASTEROIDS_SPEED_BASE
+//			, ASTEROIDS_ROTATION_SPEED, 
+//
+// \see EnemyController, Game
 /////////////////////////////////////////////////////////////
+
+
 
 #include "Component.hpp"
 #include "GameObject.hpp"
 #include "Common.hpp"
-//#include "Game.h"
+
 
 class AsteroidBehaviourComponent : public Component
 {

@@ -13,30 +13,33 @@
 
 #include "AlienBomb.hpp"
 
-
-
 void AlienBombBehaviorComponent::Update(float dt)
 {
-	go->position = go->position - (go->direction * BOMB_SPEED * dt);
+	auto* bomb = (AlienBomb*)go;
 
-	go->width += (BOMB_SPEED / 25) * dt;
-	go->height += (BOMB_SPEED / 25) * dt;
+	go->position = go->position - (go->direction * bomb->bombSpeed * dt);
+
+	go->width += (bomb->bombSpeed / 25) * dt;
+	go->height += (bomb->bombSpeed / 25) * dt;
+
 }
 
-void AlienBomb::Init(Vector2D playerPosition, double xPos, double yPos)
+void AlienBomb::Init(Vector2D playerPosition, double speed, double xPos, double yPos)
 {
 	SDL_Log("Rocket::Init");
 	GameObject::Init();
 
-	position.x = xPos;
-	position.y = yPos;
-	width = 1;
-	height = 1;
+	this->position.x = xPos;
+	this->position.y = yPos;
+	this->bombSpeed = speed;
+	this->width = 15;
+	this->height = 15;
+
+	this->angle = atan2(playerPosition.y - this->position.y, playerPosition.x - this->position.x) * (180.0f / M_PI);
 
 	// Aim for player
 	double distance = sqrt(pow(playerPosition.x - position.x, 2) + pow(playerPosition.y - position.y, 2));
-	direction = (position - playerPosition) / distance;
-
+	this->direction = (position - playerPosition) / distance;
 }
 
 void AlienBomb::Receive(Message m)

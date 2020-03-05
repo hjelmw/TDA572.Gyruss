@@ -26,10 +26,13 @@ void PlayerBehaviourComponent::Create(AvancezLib* engine, GameObject* go, std::s
 
 void PlayerBehaviourComponent::Init()
 {
+	go->width = 50;
+	go->height = 50;
+
 	radius  = (float) engine->screenWidth / 2 - 40;
 	originX = (float) engine->screenWidth / 2 - 20;
 	originY = (float) engine->screenHeight / 2 - 20;
-
+	
 	go->position.x = (double) (originX + radius * cos((angle * (M_PI / 180.0f))));
 	go->position.y = (double) (originY + radius * sin((angle * (M_PI / 180.0f))));
 
@@ -39,8 +42,13 @@ void PlayerBehaviourComponent::Init()
 // Player can move left, right or fire rockets towards the middle of the screen
 void PlayerBehaviourComponent::Update(float dt)
 {
+	auto* player = (Player*)go;
+
+	if (player->invulnerabilityTime - engine->GetElapsedTime() < 0)
+		player->invulnerable = false;
+
 	AvancezLib::KeyStatus keys;
-	engine->getKeyStatus(keys);
+	engine->GetKeyStatus(keys);
 	if (keys.right)
 	{
 		Move(dt * PLAYER_SPEED);
@@ -81,10 +89,10 @@ void PlayerBehaviourComponent::Move(float move)
 bool PlayerBehaviourComponent::CanFire()
 {
 	// shoot just if enough time passed by
-	if ((engine->getElapsedTime() - time_fire_pressed) < (FIRE_TIME_INTERVAL / 1.0f /*game_speed*/))
+	if ((engine->GetElapsedTime() - time_fire_pressed) < (FIRE_TIME_INTERVAL / 1.0f /*game_speed*/))
 		return false;
 
-	time_fire_pressed = engine->getElapsedTime();
+	time_fire_pressed = engine->GetElapsedTime();
 
 	return true;
 }
@@ -97,7 +105,7 @@ Player::~Player() { SDL_Log("Player::~Player"); }
 
 void Player::Init()
 {
-	//playerInvulnerable = engine->getElapsedTime() + PLAYER_INVULNERABLE_TIME;
+	//playerInvulnerable = engine->GetElapsedTime() + PLAYER_INVULNERABLE_TIME;
 
 	SDL_Log("Player::Init");
 	GameObject::Init();
@@ -108,16 +116,23 @@ void Player::Receive(Message m)
 {
 	if (m == HIT)
 	{
-		SDL_Log("Player::Hit!");
-		RemoveLife();
+		if (!invulnerable)
+		{
+			SDL_Log("Player::Hit!");
 
-		if (lives < 0)
-			Send(GAME_OVER);
+			RemoveLife();
+			if (lives < 0)
+				Send(GAME_OVER);
+
+			invulnerabilityTime = AvancezLib::GetElapsedTime() + PLAYER_INVULNERABLE_TIME;
+		}
+		invulnerable = true;
 	}
 }
 
 void Player::RemoveLife()
 {
 	lives--;
+	invulnerable = true;
 	SDL_Log("remaining lives %d", lives);
 }

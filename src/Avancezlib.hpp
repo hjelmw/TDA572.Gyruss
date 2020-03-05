@@ -28,14 +28,14 @@ public:
 	// Process user input by setting flags of KeyStatus
 	void ProcessInput();
 
-	// Draw contents of framebuffer
+	// DrawSprite contents of framebuffer to the screen
 	void Render();
 
 	// Destroys the avancez library instance
 	void Destroy();
 
 	// Destroys the avancez library instance and exits
-	void quit();
+	void Quit();
 
 	// Create a sprite given a string.
 	Sprite* CreateSprite(const char* name);
@@ -47,10 +47,10 @@ public:
 	void DrawPoint(int x, int y, SDL_Rect color);
 
 	// Return the total time spent in the game, in seconds.
-	float getElapsedTime();
+	static float GetElapsedTime();
 
 	// Returns status of engine
-	bool isRunning();
+	bool IsRunning();
 
 	int screenWidth, screenHeight;
 	struct KeyStatus
@@ -62,7 +62,7 @@ public:
 	};
 
 	// Returns the keyboard status. If a flag is set, the corresponding key is being held down.
-	void getKeyStatus(KeyStatus& keys);
+	void GetKeyStatus(KeyStatus& keys);
 
 
 private:
@@ -84,7 +84,7 @@ private:
 	bool running;
 
 	// Swap buffers and clear screen. Used by Render()
-	void swapBuffers();
-	void clearWindow();
+	void SwapBuffers();
+	void ClearWindow();
 };
 

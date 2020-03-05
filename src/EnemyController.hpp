@@ -20,6 +20,7 @@ class EnemyControllerBehaviorComponent : public Component
 {
 	float time_bomb_launched;
 	float time_alien_action;
+	float alienVisionFireInterval;
 	bool change_direction;
 
 	ObjectPool<Alien>* aliensPool;
@@ -36,8 +37,12 @@ public:
 
 	virtual void Update(float dt);
 
+	bool AlienCanSeePlayer(Alien* alien);
+
 	// return a random action if enough time has passed
 	int AlienCanPerformRandomAction();
+
+	void GiveAlienRandomState(Alien* alien, Alien::AlienState state);
 
 	void spawnAsteroids();
 

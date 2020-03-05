@@ -70,3 +70,21 @@ public:
 	virtual void Create(AvancezLib* engine, GameObject* go, int xMax, int yMax);
 	virtual void Update(float dt);
 };
+
+// Separating Axis Theorem collision testing (SAT)
+class SATCollideComponent : public Component
+{
+	ObjectPool<GameObject>* coll_objects;
+
+protected:
+	struct Axis {
+		float minProjection;
+		float maxProjection;
+	};
+
+	bool CheckSATCollision(GameObject* a, GameObject* b);
+
+public:
+	virtual void Create(AvancezLib* engine, GameObject* go, std::set<GameObject*>* game_objects, ObjectPool<GameObject>* coll_objects);
+	virtual void Update(float dt);
+};
