@@ -21,6 +21,7 @@
   <ItemGroup>
     <ClInclude Include="src\Alien.hpp" />
     <ClInclude Include="src\AlienBomb.hpp" />
+    <ClInclude Include="src\Asteroid.hpp" />
     <ClInclude Include="src\Avancezlib.hpp" />
     <ClInclude Include="src\Common.hpp" />
     <ClInclude Include="src\Component.hpp" />
@@ -37,6 +38,7 @@
   <ItemGroup>
     <ClCompile Include="src\Alien.cpp" />
     <ClCompile Include="src\AlienBomb.cpp" />
+    <ClCompile Include="src\Asteroid.cpp" />
     <ClCompile Include="src\Avancezlib.cpp" />
     <ClCompile Include="src\Common.cpp" />
     <ClCompile Include="src\Component.cpp" />

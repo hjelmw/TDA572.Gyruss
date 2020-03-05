@@ -57,8 +57,10 @@ public:
 	int shotsLeft;
 
 	// Movement
-	int circularDirectionX;
-	int circularDirectionY;
+	short circularDirectionX;
+	short circularDirectionY;
+	short circularDirectionZ;
+
 	double originX;
 	double originY;
 	double angle;
@@ -66,7 +68,7 @@ public:
 
 	virtual ~Alien();
 
-	virtual void Init(double xPos, double yPos, double xSize, double ySize, float radius, int circularDirectionX, int circularDirectionY, AlienState state);
+	virtual void Init(double xPos, double yPos, double xSize, double ySize, float radius,short circularDirectionX, short circularDirectionY, short circularDirectionZ, AlienState state);
 
 	virtual void Receive(Message m);
 
@@ -82,13 +84,13 @@ class AlienBehaviorComponent : public Component
 	Player* player; // Keeps track of where player currently is.
 
 public:
-	virtual void Create(AvancezLib* engine, GameObject* go, std::set<GameObject*>* game_objects, ObjectPool<AlienBomb>* bombs_pool, Player* player);
+	virtual void Create(AvancezLib* engine, GameObject* go, std::set<GameObject*>* game_objects, ObjectPool<AlienBomb>* bombsPool, Player* player);
 
 	virtual void Update(float dt);
 		
 private:
 	Alien* alien;
-	ObjectPool<AlienBomb>* bombs_pool;
+	ObjectPool<AlienBomb>* bombsPool;
 
 	// Used for by alien to set aim to player etc.
 	float distance;
@@ -116,5 +118,7 @@ private:
 
 	// Alien sprite size changes depending on how close to the middle of the screen it is to simulate 2.5D effect
 	void ResizeAlien(double oldDistance, double newDistance, float dt);
+
+	void RotateAlien();
 
 };

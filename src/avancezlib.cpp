@@ -1,6 +1,14 @@
+//////////////////////////////////////////////////////////////
+//					AvancezLib
+// \brief Game engine. Renders object on the screen
+//	
+// \params GAME_CENTER_X, GAME_CENTER_Y, FONT_SIZE
+// \see Game
+/////////////////////////////////////////////////////////////
+
+
 
 #include "avancezlib.hpp"
-
 
 
 // ------------------ ENGINE ---------------------------
@@ -16,7 +24,7 @@ bool AvancezLib::Init(int width, int height)
 		return false;
 	}
 
-	//Create window
+	// Create window
 	window = SDL_CreateWindow("aVANCEZ", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, width, height, SDL_WINDOW_SHOWN);
 	if (window == NULL)
 	{
@@ -24,7 +32,7 @@ bool AvancezLib::Init(int width, int height)
 		return false;
 	}
 
-	//Create renderer for window
+	// Create renderer for window
 	renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
 	if (renderer == NULL)
 	{
@@ -32,8 +40,9 @@ bool AvancezLib::Init(int width, int height)
 		return false;
 	}
 
+	// Load font
 	TTF_Init();
-	font = TTF_OpenFont("data/space_invaders.ttf", 14); //this opens a font style and sets a size
+	font = TTF_OpenFont("data/space_invaders.ttf", FONT_SIZE); //this opens a font style and sets a size
 	if (font == NULL)
 	{
 		SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "font cannot be created! SDL_Error: %s\n", SDL_GetError());
@@ -172,18 +181,12 @@ void AvancezLib::DrawPoint(int x, int y, SDL_Rect color)
 	
 	SDL_RenderDrawPoint(renderer, x + 1, y);
 	SDL_RenderDrawPoint(renderer, x - 1, y);
-	SDL_RenderDrawPoint(renderer, x + 2, y);
-	SDL_RenderDrawPoint(renderer, x - 2, y);
 
 	SDL_RenderDrawPoint(renderer, x,     y + 1);
 	SDL_RenderDrawPoint(renderer, x,     y - 1);
-	SDL_RenderDrawPoint(renderer, x,     y + 2);
-	SDL_RenderDrawPoint(renderer, x,     y - 2);
 
 	SDL_RenderDrawPoint(renderer, x + 1, y + 1);
 	SDL_RenderDrawPoint(renderer, x - 1, y - 1);
-	SDL_RenderDrawPoint(renderer, x + 2, y + 2);
-	SDL_RenderDrawPoint(renderer, x - 2, y - 2);
 }
 
 Sprite* AvancezLib::CreateSprite(const char *name)

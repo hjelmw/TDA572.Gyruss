@@ -9,10 +9,7 @@
 // \see Game, Alien, EnemyController
 /////////////////////////////////////////////////////////////
 
-#include "Component.hpp"
-#include "GameObject.hpp"
-#include "Vector2D.hpp"
-#include "Common.hpp"
+
 
 #include "AlienBomb.hpp"
 

@@ -19,7 +19,7 @@
 class PlayerBehaviourComponent : public Component
 {
 	float time_fire_pressed;	// time from the last time the fire button was pressed
-	ObjectPool<Rocket>* rockets_pool;
+	ObjectPool<Rocket>* rocketsPool;
 
 	float radius;
 	float angle;
@@ -30,7 +30,7 @@ class PlayerBehaviourComponent : public Component
 public:
 	virtual ~PlayerBehaviourComponent();
 
-	virtual void Create(AvancezLib* engine, GameObject* go, std::set<GameObject*>* game_objects, ObjectPool<Rocket>* rockets_pool);
+	virtual void Create(AvancezLib* engine, GameObject* go, std::set<GameObject*>* game_objects, ObjectPool<Rocket>* rocketsPool);
 
 	virtual void Init();
 
@@ -43,6 +43,9 @@ public:
 
 	// return true if enough time has passed from the previous rocket
 	bool CanFire();
+
+	// Changes rotation of player to point towards middle of screen
+	void RotatePlayer();
 };
 
 

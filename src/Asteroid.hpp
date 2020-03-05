@@ -1,4 +1,5 @@
 #pragma once
+#pragma once
 
 //////////////////////////////////////////////////////////////
 //					AlienBomb
@@ -9,24 +10,21 @@
 // \see Game, Alien, EnemyController
 /////////////////////////////////////////////////////////////
 
-
-
 #include "Component.hpp"
 #include "GameObject.hpp"
-#include "Vector2D.hpp"
 #include "Common.hpp"
+//#include "Game.h"
 
-class AlienBombBehaviorComponent : public Component
+class AsteroidBehaviourComponent : public Component
 {
 
 public:
 	virtual void Update(float dt);
 };
 
-class AlienBomb : public GameObject
+class Asteroid : public GameObject
 {
 public:
-	bool changeDirection;
 
 	virtual void Init(Vector2D playerPosition, double xPos, double yPos);
 	virtual void Receive(Message m);

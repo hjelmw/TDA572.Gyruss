@@ -26,7 +26,7 @@ void RenderComponent::Update(float dt)
 		return;
 
 	if (sprite)
-		sprite->draw(int(go->position.x), int(go->position.y), int(go->width), int(go->height), 90);
+		sprite->draw(int(go->position.x), int(go->position.y), int(go->width), int(go->height), (go->angle));
 }
 
 void RenderComponent::Destroy()
@@ -89,7 +89,7 @@ void BoxCollideComponent::Update(float dt)
 	//	}
 	//}
 
-	if (xPos <= xMin || xPos >= xMax || yPos <= yMin || yPos >= yMax)
+	if (xPos <= xMin - 150.0f || xPos >= xMax + 150.0f || yPos <= yMin - 150.0f || yPos >= yMax + 150.0f)
 	{
 		go->enabled = false;
 		SDL_Log("Out of bounds");

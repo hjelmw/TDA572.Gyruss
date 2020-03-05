@@ -32,6 +32,7 @@ public:
 
 	double width;
 	double height;
+	double angle;
 
 	bool changeDirection;
 	bool enabled;

@@ -18,20 +18,20 @@
 
 PlayerBehaviourComponent::~PlayerBehaviourComponent() {}
 
-void PlayerBehaviourComponent::Create(AvancezLib* engine, GameObject* go, std::set<GameObject*>* game_objects, ObjectPool<Rocket>* rockets_pool)
+void PlayerBehaviourComponent::Create(AvancezLib* engine, GameObject* go, std::set<GameObject*>* game_objects, ObjectPool<Rocket>* rocketsPool)
 {
 	Component::Create(engine, go, game_objects);
-	this->rockets_pool = rockets_pool;
+	this->rocketsPool = rocketsPool;
 }
 
 void PlayerBehaviourComponent::Init()
 {
-	radius = engine->screenWidth / 2 - 40;
-	originX = engine->screenWidth / 2 - 20;
-	originY = engine->screenHeight / 2 - 20;
+	radius  = (float) engine->screenWidth / 2 - 40;
+	originX = (float) engine->screenWidth / 2 - 20;
+	originY = (float) engine->screenHeight / 2 - 20;
 
-	go->position.x = (double) (originX + radius * cos((float)((int)angle * (M_PI / 180.0f))));
-	go->position.y = (double) (originY + radius * sin((float)((int)angle * (M_PI / 180.0f))));
+	go->position.x = (double) (originX + radius * cos((angle * (M_PI / 180.0f))));
+	go->position.y = (double) (originY + radius * sin((angle * (M_PI / 180.0f))));
 
 	time_fire_pressed = -10000.f;
 }
@@ -54,7 +54,7 @@ void PlayerBehaviourComponent::Update(float dt)
 		if (CanFire())
 		{
 			// fetches a rocket from the pool and use it in game_objects
-			Rocket* rocket = rockets_pool->FirstAvailable();
+			Rocket* rocket = rocketsPool->FirstAvailable();
 			if (rocket != NULL)	// rocket is NULL is the object pool can not provide an object
 			{
 				rocket->Init(go->position.x, go->position.y);
@@ -62,6 +62,8 @@ void PlayerBehaviourComponent::Update(float dt)
 			}
 		}
 	}
+
+	RotatePlayer();
 }
 
 
@@ -71,8 +73,8 @@ void PlayerBehaviourComponent::Move(float move)
 
 	angle += move;
 
-	go->position.x = originX + radius * cos((float)((int)angle * (M_PI / 180.0f)));
-	go->position.y = originY + radius * sin((float)((int)angle * (M_PI / 180.0f)));
+	go->position.x = originX + radius * cos((angle * (M_PI / 180.0f)));
+	go->position.y = originY + radius * sin((angle * (M_PI / 180.0f)));
 }
 
 // return true if enough time has passed from the previous rocket
@@ -85,6 +87,10 @@ bool PlayerBehaviourComponent::CanFire()
 	time_fire_pressed = engine->getElapsedTime();
 
 	return true;
+}
+
+void PlayerBehaviourComponent::RotatePlayer() {	
+	go->angle = atan2(go->position.y - GAME_CENTER_Y, go->position.x - GAME_CENTER_X) * (180.0f / M_PI) - 90;
 }
 
 Player::~Player() { SDL_Log("Player::~Player"); }

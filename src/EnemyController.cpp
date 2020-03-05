@@ -10,22 +10,19 @@
 
 
 
-#include "Component.hpp"
-#include "GameObject.hpp"
-#include "Avancezlib.hpp"
-#include "Alien.hpp"
+
 #include "EnemyController.hpp"
-#include "Common.hpp"
 
 
 EnemyControllerBehaviorComponent::~EnemyControllerBehaviorComponent() {}
 
-void EnemyControllerBehaviorComponent::Create(AvancezLib* engine, GameObject* go, std::set<GameObject*>* game_objects, ObjectPool<Alien>* aliens_pool, ObjectPool<AlienBomb>* bombs_pool, Player* player)
+void EnemyControllerBehaviorComponent::Create(AvancezLib* engine, GameObject* go, std::set<GameObject*>* game_objects, ObjectPool<Alien>* aliensPool, ObjectPool<AlienBomb>* bombsPool, ObjectPool<Asteroid>* asteroidsPool,Player* player)
 {
 	Component::Create(engine, go, game_objects);
 
-	this->aliens_pool = aliens_pool;
-	this->bombs_pool = bombs_pool;
+	this->aliensPool = aliensPool;
+	this->bombsPool = bombsPool;
+	this->asteroidsPool = asteroidsPool;
 	this->player = player;
 }
 
@@ -35,17 +32,20 @@ void EnemyControllerBehaviorComponent::Init()
 
 	short j = 1;
 	short k = 1;
-
+	short l = 1;
 	// Spawn 1 alien in each of corner
-	// Currently very ugly
-	for (int i = 0; i < 4; i++)
+	for (int i = 0; i < 8; i++)
 	{
-		auto *alien = aliens_pool->FirstAvailable();
-		(*alien).Init(GAME_CENTER_X + 50 * j, GAME_CENTER_Y + 70 * k, 1, 1, 60, j, k, Alien::STATE_INITIAL2);
+		auto *alien = aliensPool->FirstAvailable();
+		(*alien).Init(GAME_CENTER_X + 50 * j, GAME_CENTER_Y + 70 * k, 1, 1, 60, j, k, l, Alien::STATE_INITIAL2);
 		game_objects->insert(alien);
+
+		// A little ugly but it works
 		j *= -1;
 		if (j == -1)
 			k *= -1;
+		if (k == -1)
+			l *= -1;
 	}
 
 	change_direction = false;
@@ -58,7 +58,7 @@ void EnemyControllerBehaviorComponent::Update(float dt)
 	//int randomAlienAction = 0xFFFF;
 	if (randomAlienAction != 0xFFFF)
 	{
-		auto *alien = aliens_pool->SelectRandom();
+		auto *alien = aliensPool->SelectRandom();
 		if (alien != NULL && alien->currentState != Alien::STATE_INITIAL2)
 		{
 			switch (randomAlienAction)
@@ -72,12 +72,12 @@ void EnemyControllerBehaviorComponent::Update(float dt)
 			case Alien::STATE_REPOSITION:
 			{
 				// Generate new random position for the swarm
-				int randX = rand() % (engine->screenWidth - 200) + 300;
-				int randY = rand() % (engine->screenHeight - 200) + 300;
+				int randX = rand() % (engine->screenWidth - 500) + 300;
+				int randY = rand() % (engine->screenHeight - 500) + 300;
 
 				for (int i = 0; i < ALIENS_IN_SWARM; i++)
 				{
-					Alien* alienToReposition = aliens_pool->SelectRandom();
+					Alien* alienToReposition = aliensPool->SelectRandom();
 					if (alienToReposition != NULL && alien->currentState == Alien::STATE_CIRCLE)
 					{
 						// Slight variation in swarm position for each alien
@@ -98,7 +98,7 @@ void EnemyControllerBehaviorComponent::Update(float dt)
 
 			case Alien::STATE_FIRE1:
 			{
-				Alien* alienToFire = aliens_pool->SelectRandom();
+				Alien* alienToFire = aliensPool->SelectRandom();
 				if (alienToFire != NULL)
 				{
 					alienToFire->currentState = static_cast<Alien::AlienState>(randomAlienAction);
@@ -109,14 +109,7 @@ void EnemyControllerBehaviorComponent::Update(float dt)
 
 			case Alien::STATE_FIRE2:
 			{
-				AlienBomb* bomb = bombs_pool->FirstAvailable();
-				if (bomb != NULL)
-				{
-					Vector2D randomPosNearPlayer(player->position.x + rand() % 100, player->position.y + rand() % 100);
-					bomb->Init(randomPosNearPlayer, GAME_CENTER_X, GAME_CENTER_Y);
-					game_objects->insert(bomb);
-				}
-				SDL_Log("Alien::Fire2");
+				spawnAsteroids();
 			}
 			break;
 
@@ -140,21 +133,33 @@ int EnemyControllerBehaviorComponent::AlienCanPerformRandomAction()
 	time_alien_action = engine->getElapsedTime();
 	int randomAction = rand() % 6 + 4;
 
-	return randomAction;
+	//return randomAction;
+	return 6;
 }
 
-void EnemyControllerBehaviorComponent::spawnAsteroid()
+void EnemyControllerBehaviorComponent::spawnAsteroids()
 {
+	for (int i = 0; i < ASTEROIDS_AMOUNT; i++)
+	{
+		Asteroid* asteroid = asteroidsPool->FirstAvailable();
 
+		float randAngle = rand() % ((int)M_PI * 2);
+		Vector2D randomPointonCircleCircumference(GAME_CENTER_X + cos(randAngle) * 50, GAME_CENTER_Y + sin(randAngle) * 50);
+		if (asteroid != NULL)
+		{
+			asteroid->Init(player->position, randomPointonCircleCircumference.x, randomPointonCircleCircumference.y);
+			game_objects->insert(asteroid);
+		}
+	}
 }
 
 // Spawn aliens in grid format
-void EnemyControllerBehaviorComponent::SpawnAliens(ObjectPool<Alien>& aliens_pool)
+void EnemyControllerBehaviorComponent::SpawnAliens(ObjectPool<Alien>& aliensPool)
 {
 	//int angle = 0;
 	//int xPos;
 	//int yPos;
-	//for (auto alien = aliens_pool.pool.begin(); alien != aliens_pool.pool.end(); alien++)
+	//for (auto alien = aliensPool.pool.begin(); alien != aliensPool.pool.end(); alien++)
 	//{
 	//	angle += 90;
 	//	if (angle > 360) angle = 0;

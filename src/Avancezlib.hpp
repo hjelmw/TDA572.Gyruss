@@ -13,6 +13,7 @@
 #include "SDL_ttf.h"
 #include "SDL_image.h"
 #include "Sprite.hpp"
+#include "Common.hpp"
 #include <string>     // std::string, std::to_string
 #include <iostream>
 #include <sstream>

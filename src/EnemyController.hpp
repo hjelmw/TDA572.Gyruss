@@ -1,5 +1,3 @@
-
-
 //////////////////////////////////////////////////////////////
 //					EnemyController
 // \brief EnemyController gives the enemies actions to perform during game loop
@@ -8,8 +6,15 @@
 // \see Game
 /////////////////////////////////////////////////////////////
 
-//#include "Game.h"
 
+
+#include "Component.hpp"
+#include "GameObject.hpp"
+#include "Avancezlib.hpp"
+
+#include "Alien.hpp"
+#include "Asteroid.hpp"
+#include "Common.hpp"
 
 class EnemyControllerBehaviorComponent : public Component
 {
@@ -17,14 +22,15 @@ class EnemyControllerBehaviorComponent : public Component
 	float time_alien_action;
 	bool change_direction;
 
-	ObjectPool<Alien>* aliens_pool;
-	ObjectPool<AlienBomb>* bombs_pool;
+	ObjectPool<Alien>* aliensPool;
+	ObjectPool<AlienBomb>* bombsPool;
+	ObjectPool<Asteroid>* asteroidsPool;
 	Player* player;
 
 public:
 	virtual ~EnemyControllerBehaviorComponent();
 
-	virtual void Create(AvancezLib* engine, GameObject* go, std::set<GameObject*>* game_objects, ObjectPool<Alien>* aliens_pool, ObjectPool<AlienBomb>* bombs_pool, Player* player);
+	virtual void Create(AvancezLib* engine, GameObject* go, std::set<GameObject*>* game_objects, ObjectPool<Alien>* aliensPool, ObjectPool<AlienBomb>* bombsPool, ObjectPool<Asteroid>* asteroidsPool, Player* player);
 
 	virtual void Init();
 
@@ -33,10 +39,10 @@ public:
 	// return a random action if enough time has passed
 	int AlienCanPerformRandomAction();
 
-	void spawnAsteroid();
+	void spawnAsteroids();
 
 	// Spawn aliens in grid format
-	void SpawnAliens(ObjectPool<Alien>& aliens_pool);
+	void SpawnAliens(ObjectPool<Alien>& aliensPool);
 
 };
 

@@ -21,13 +21,12 @@
 #include "Sprite.hpp"
 #include "Alien.hpp"
 #include "AlienBomb.hpp"
+#include "Asteroid.hpp"
 #include "EnemyController.hpp"
 #include "Starfield.hpp"
 #include "Common.hpp"
 
 #include <set>
-
-
 
 
 class Game : public GameObject
@@ -37,21 +36,26 @@ private:
 
 	AvancezLib* engine;
 
-	Player* player;
-	Sprite* life_sprite;
+	Player* playerSprite;
+	Sprite* lifeSprite;
+	Sprite* planetSprite;
 	EnemyController* aliens_grid;
-	Starfield star_field;
+	Starfield starField;
 
-	ObjectPool<Rocket> rockets_pool;	// used to instantiate rockets
-	ObjectPool<Alien> aliens_pool;		// pool of aliens
-	ObjectPool<AlienBomb> bombs_pool;
+
+	ObjectPool<Rocket> rocketsPool;	
+	ObjectPool<Alien> aliensPool;
+	ObjectPool<AlienBomb> bombsPool;
+	ObjectPool<Asteroid> asteroidsPool;
+
 
 	bool gameOver = false;
 	bool canSpawn = true;
 	float spawnDelay;
-	int spawnLeft = ALIEN_AMOUNT;
+	int spawnLeft = ALIENS_AMOUNT;
 
 	unsigned int score = 0;
+	unsigned int level = 1;
 public:
 
 	virtual void Create(AvancezLib* engine);
@@ -62,11 +66,11 @@ public:
 	virtual void Update(float dt);
 
 	// Draw UI and text elements here
-	virtual void Draw();
+	virtual void Draw(float dt);
 
 	virtual void Destroy();
 
-	void Receive(Message m);
+	virtual void Receive(Message m);
 
 
 };
