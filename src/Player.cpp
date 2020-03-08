@@ -83,7 +83,11 @@ void PlayerBehaviourComponent::Move(float move)
 
 	go->position.x = originX + radius * cos((angle * (M_PI / 180.0f)));
 	go->position.y = originY + radius * sin((angle * (M_PI / 180.0f)));
+
+	go->position.x *= 0.98;
+	go->position.y *= 0.98;
 }
+
 
 // return true if enough time has passed from the previous rocket
 bool PlayerBehaviourComponent::CanFire()
@@ -97,11 +101,14 @@ bool PlayerBehaviourComponent::CanFire()
 	return true;
 }
 
+
 void PlayerBehaviourComponent::RotatePlayer() {	
 	go->angle = atan2(go->position.y - GAME_CENTER_Y, go->position.x - GAME_CENTER_X) * (180.0f / M_PI) - 90;
 }
 
+
 Player::~Player() { SDL_Log("Player::~Player"); }
+
 
 void Player::Init()
 {
@@ -111,6 +118,7 @@ void Player::Init()
 	GameObject::Init();
 	lives = NUM_LIVES;
 }
+
 
 void Player::Receive(Message m)
 {

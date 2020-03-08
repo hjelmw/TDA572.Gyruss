@@ -18,6 +18,7 @@
 #include "AvancezLib.hpp"
 #include "Player.hpp"
 #include "AlienBomb.hpp"
+#include "AlienOrb.hpp"
 
 #include <sstream>
 #include <random>
@@ -54,13 +55,17 @@ public:
 	AlienState currentState;
 	AlienState previousState;
 	
+	// Alien ammunition
 	int shotsLeft;
 
 	// Movement
-	short circularDirectionX;
-	short circularDirectionY;
-	short circularDirectionZ;
+	char circularDirectionX;
+	char circularDirectionY;
 
+	// Horizontal or Vertical initial movement (STATE_INITIAL2)
+	bool rotateInit;
+
+	// For circular movement
 	double originX;
 	double originY;
 	double angle;
@@ -68,7 +73,7 @@ public:
 
 	virtual ~Alien();
 
-	virtual void Init(double xPos, double yPos, double xSize, double ySize, float radius,short circularDirectionX, short circularDirectionY, short circularDirectionZ, AlienState state);
+	virtual void Init(double xPos, double yPos, double xSize, double ySize, float radius, char circularDirectionX, char circularDirectionY, AlienState state);
 
 	virtual void Receive(Message m);
 
@@ -76,7 +81,6 @@ public:
 
 
 /*
-
 Alien behavior component
 */
 class AlienBehaviorComponent : public Component
@@ -84,13 +88,14 @@ class AlienBehaviorComponent : public Component
 	Player* player; // Keeps track of where player currently is.
 
 public:
-	virtual void Create(AvancezLib* engine, GameObject* go, std::set<GameObject*>* game_objects, ObjectPool<AlienBomb>* bombsPool, Player* player);
+	virtual void Create(AvancezLib* engine, GameObject* go, std::set<GameObject*>* game_objects, ObjectPool<AlienBomb>* bombsPool, ObjectPool<AlienOrb>* orbsPool, Player* player);
 
 	virtual void Update(float dt);
 		
 private:
 	Alien* alien;
 	ObjectPool<AlienBomb>* bombsPool;
+	ObjectPool<AlienOrb>* orbsPool;
 
 	// Used for by alien to set aim to player etc.
 	float distance;
@@ -114,7 +119,9 @@ private:
 
 	bool CanFire();
 
-	void Fire(float dt);
+	void Fire(float speed);
+
+	void FireOrb(float speed);
 
 	// Alien sprite size changes depending on how close to the middle of the screen it is to simulate 2.5D effect
 	void ResizeAlien(double oldDistance, double newDistance, float dt);

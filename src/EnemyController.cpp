@@ -16,63 +16,63 @@
 
 EnemyControllerBehaviorComponent::~EnemyControllerBehaviorComponent() {}
 
-void EnemyControllerBehaviorComponent::Create(AvancezLib* engine, GameObject* go, std::set<GameObject*>* game_objects, ObjectPool<Alien>* aliensPool, ObjectPool<AlienBomb>* bombsPool, ObjectPool<Asteroid>* asteroidsPool,Player* player)
+
+void EnemyControllerBehaviorComponent::Create(AvancezLib* engine, GameObject* go, std::set<GameObject*>* game_objects, ObjectPool<Alien>* aliensPool, ObjectPool<AlienBomb>* bombsPool, ObjectPool<AlienOrb>* orbsPool, ObjectPool<Asteroid>* asteroidsPool,Player* player)
 {
 	Component::Create(engine, go, game_objects);
 
 	this->aliensPool = aliensPool;
 	this->bombsPool = bombsPool;
+	this->orbsPool = orbsPool;
 	this->asteroidsPool = asteroidsPool;
 	this->player = player;
+
+	// This will decrement on every new level
+	((EnemyController*)go)->asteroidInterval = ASTEROID_TIME_INTERVAL;
+	((EnemyController*)go)->alienActionInterval = ENEMY_ACTION_INTERVAL;
 }
+
 
 void EnemyControllerBehaviorComponent::Init()
 {
-	time_alien_action = engine->GetElapsedTime();
+	timeAlienAction = engine->GetElapsedTime() + ((EnemyController*)go)->alienActionInterval;
 
-	char j = 1;
-	char k = 1;
-	char l = 1;
-	// Spawn 1 alien in each of corner
-	for (int i = 0; i < 4; i++)
-	{
-		auto *alien = aliensPool->FirstAvailable();
-		(*alien).Init(GAME_CENTER_X + 50 * j, GAME_CENTER_Y + 70 * k, 1, 1, 60, j, k, l, Alien::STATE_INITIAL2);
-		game_objects->insert(alien);
+ 	SpawnAliens(aliensPool);
 
-		// A little ugly but it works
-		j *= -1;
-		if (j == -1)
-			k *= -1;
-		if (k == -1)
-			l *= -1;
-	}
-
-	change_direction = false;
+	changeDirection = false;
 }
+
 
 void EnemyControllerBehaviorComponent::Update(float dt)
 {
 	auto* alien = aliensPool->SelectRandom();
-	double distanceToPlayer = sqrt(pow(player->position.x - alien->position.x, 2) + pow(player->position.y - alien->position.y, 2));
-
-	if (AlienCanSeePlayer(alien) && (alienVisionFireInterval - engine->GetElapsedTime() < 0))
+	if (alien != NULL)
 	{
-		alien->currentState = Alien::STATE_FIRE3;
-		alienVisionFireInterval = engine->GetElapsedTime() + ALIEN_NEAR_FIRE_INTERVAL;
-		SDL_Log("Alien::See player!");
-	}
+		double distanceToPlayer = sqrt(pow(player->position.x - alien->position.x, 2) + pow(player->position.y - alien->position.y, 2));
 
-
-	int randomAlienAction = AlienCanPerformRandomAction();
-	if (randomAlienAction != 0xFFFF)
-	{
-		if (alien != NULL && alien->currentState != Alien::STATE_INITIAL2)
+		if (AlienCanSeePlayer(alien) && (alienVisionFireInterval - engine->GetElapsedTime() < 0))
 		{
-			GiveAlienRandomState(alien, static_cast<Alien::AlienState>(randomAlienAction));
+			alien->currentState = Alien::STATE_FIRE3;
+			alienVisionFireInterval = engine->GetElapsedTime() + ALIEN_NEAR_FIRE_INTERVAL;
+			SDL_Log("Alien::See player!");
+		}
+
+		int randomAlienAction = AlienCanPerformRandomAction();
+		if (randomAlienAction != 0xFFFF)
+		{
+			if (alien->currentState != Alien::STATE_INITIAL2 && alien->currentState != Alien::STATE_INITIAL1)
+			{
+				GiveAlienRandomState(alien, static_cast<Alien::AlienState>(randomAlienAction));
+			}
+		}
+
+		if (CanSpawnAsteroids())
+		{
+			SpawnAsteroids();
 		}
 	}
 }
+
 
 bool EnemyControllerBehaviorComponent::AlienCanSeePlayer(Alien * alien)
 {
@@ -80,21 +80,16 @@ bool EnemyControllerBehaviorComponent::AlienCanSeePlayer(Alien * alien)
 	return distanceToPlayer < ALIEN_NEAR_VISION_DISTANCE && alien->currentState != Alien::STATE_INITIAL2;
 }
 
+
 void EnemyControllerBehaviorComponent::GiveAlienRandomState(Alien* alien, Alien::AlienState alienAction)
 {
 	switch (alienAction)
 	{
-	case Alien::STATE_INITIAL2:
-	{
-		// This might not be needed							
-	}
-	break;
-
 	case Alien::STATE_REPOSITION:
 	{
 		// Generate new random position for the swarm
-		int randX = rand() % (engine->screenWidth - 200) + 300;
-		int randY = rand() % (engine->screenHeight - 200) + 300;
+		int randX = rand() % ((engine->screenWidth / 2) - 50) + 400;
+		int randY = rand() % ((engine->screenHeight / 2) - 50) + 400;
 
 		for (int i = 0; i < ALIENS_IN_SWARM; i++)
 		{
@@ -130,18 +125,20 @@ void EnemyControllerBehaviorComponent::GiveAlienRandomState(Alien* alien, Alien:
 
 	case Alien::STATE_FIRE2:
 	{
-		spawnAsteroids();
+		alien->currentState = static_cast<Alien::AlienState>(alienAction);
 	}
 	break;
 
 	}
 }
 
+
 // return a random action if enough time has passed
 int EnemyControllerBehaviorComponent::AlienCanPerformRandomAction()
 {
+	float test = engine->GetElapsedTime();
 	// shoot just if enough time passed by
-	if ((engine->GetElapsedTime() - time_alien_action) < (ENEMY_ACTION_INTERVAL))
+	if (engine->GetElapsedTime() - timeAlienAction  < 0 )
 		return 0xFFFF;
 
 	//3% chance per frame
@@ -149,49 +146,78 @@ int EnemyControllerBehaviorComponent::AlienCanPerformRandomAction()
 	//	return 0xFFFF;
 
 	// Random state between 4-7
-	time_alien_action = engine->GetElapsedTime();
-	int randomAction = rand() % 6 + 4;
+	timeAlienAction = engine->GetElapsedTime() + ((EnemyController*)go)->alienActionInterval;
+	int randomAction = rand() % 7 + 4;
 
 	return randomAction;
 }
 
-void EnemyControllerBehaviorComponent::spawnAsteroids()
+
+bool EnemyControllerBehaviorComponent::CanSpawnAsteroids()
+{
+	// Asteroids spawn on an interval
+	if ((engine->GetElapsedTime() - timeAsteroidAction) < 0 )
+		return false;
+
+	//3% chance per frame
+	if ((rand() / (float)RAND_MAX) < 0.97f)
+		return false;
+
+	timeAsteroidAction = engine->GetElapsedTime() + ((EnemyController*)go)->asteroidInterval;
+
+	return true;
+	//return 4;
+}
+
+
+void EnemyControllerBehaviorComponent::SpawnAsteroids()
 {
 	for (int i = 0; i < ASTEROIDS_AMOUNT; i++)
 	{
 		Asteroid* asteroid = asteroidsPool->FirstAvailable();
 
-		float randAngle = rand() % ((int)M_PI * 2);
-		Vector2D randomPointonCircleCircumference(GAME_CENTER_X + cos(randAngle) * 30, GAME_CENTER_Y + sin(randAngle) * 30);
 		if (asteroid != NULL)
 		{
-			asteroid->Init(player->position, randomPointonCircleCircumference.x, randomPointonCircleCircumference.y);
+			asteroid->Init();
 			game_objects->insert(asteroid);
 		}
 	}
 }
 
+
 // Spawn aliens in grid format
-void EnemyControllerBehaviorComponent::SpawnAliens(ObjectPool<Alien>& aliensPool)
+// Direction controls initial lemniscate of bernoulli movement (true: horizontal, false: vertical)
+void EnemyControllerBehaviorComponent::SpawnAliens(ObjectPool<Alien> *aliensPool)
 {
-	//int angle = 0;
-	//int xPos;
-	//int yPos;
-	//for (auto alien = aliensPool.pool.begin(); alien != aliensPool.pool.end(); alien++)
-	//{
-	//	angle += 90;
-	//	if (angle > 360) angle = 0;
+	char j = 1;
+	char k = 1;
 
-	//	xPos = engine->screenWidth / 2 + 40 * cos((float)((int)angle * (M_PI / 180.0f)));
-	//	yPos = engine->screenHeight / 2 + 40 * sin((float)((int)angle * (M_PI / 180.0f)));
+	// Spawn 1 alien in each of corner
+	for (int i = 0; i < 4; i++)
+	{
+		auto* alien = aliensPool->FirstAvailable();
+		(*alien).Init(GAME_CENTER_X + 50 * j, GAME_CENTER_Y + 70 * k, 1, 1, 60.0f, j, k, Alien::STATE_INITIAL2);
+		game_objects->insert(alien);
 
-	//	(*alien)->Init(xPos, yPos, 2, 2);
-	//	(*alien)->enabled = true;
-	//}
+			// A little ugly but it works
+		j *= -1;
+		if (j == -1)
+			k *= -1;
+	}
 }
 
+void EnemyController::Receive(Message m)
+{
+	if (m == NEW_LEVEL)
+	{
+		// Alien actions and asteroids get more frequent on new levels
+		alienActionInterval = alienActionInterval > 0.2 ? alienActionInterval - ENEMY_DIFFICULTY_INCREMENT : 0.2;
+		asteroidInterval = asteroidInterval > 0.5 ? asteroidInterval - ASTEROID_DIFFICULTY_INCREMENT : 0.5;
+	}
+}
 
 EnemyController:: ~EnemyController() { SDL_Log("AliensGrid::~AliensGrid"); }
+
 
 void EnemyController::Init()
 {

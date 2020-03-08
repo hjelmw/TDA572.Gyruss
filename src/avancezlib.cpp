@@ -25,7 +25,7 @@ bool AvancezLib::Init(int width, int height)
 	}
 
 	// Create window
-	window = SDL_CreateWindow("aVANCEZ", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, width, height, SDL_WINDOW_SHOWN);
+	window = SDL_CreateWindow("Gyruss - Avancez Engine", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, width, height, SDL_WINDOW_SHOWN);
 	if (window == NULL)
 	{
 		SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Window could not be created! SDL_Error: %s\n", SDL_GetError());
@@ -76,10 +76,6 @@ void AvancezLib::ClearWindow()
 
 void AvancezLib::Destroy()
 {
-	SDL_DestroyTexture(texture);
-	SDL_FreeSurface(surface);
-	TTF_CloseFont(font);
-
 	SDL_DestroyRenderer(renderer);
 	SDL_DestroyWindow(window);
 	TTF_Quit();
@@ -176,7 +172,7 @@ void AvancezLib::DrawPoint(int x, int y, SDL_Rect color)
 {
 	SDL_SetRenderDrawColor(renderer, color.x, color.y, color.w, color.h);
 	
-	// DrawSprite a 13 pixel thick point
+	// DrawSprite a 7 pixel thick point
 	SDL_RenderDrawPoint(renderer, x,     y);
 	
 	SDL_RenderDrawPoint(renderer, x + 1, y);

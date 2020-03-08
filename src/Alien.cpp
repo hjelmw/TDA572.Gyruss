@@ -1,7 +1,5 @@
 
 
-#pragma once
-
 //////////////////////////////////////////////////////////////
 //						Alien
 // \brief Main enemy in the game.
@@ -20,6 +18,7 @@
 #include "Alien.hpp"
 #include "Common.hpp"
 
+
 /*
 	Alien movement patterns
 	Initial1: Spawn outside of screen and enter from one of the corners
@@ -36,16 +35,13 @@
 */
 
 /*
-
 Alien behavior component
 */
-
-
-
-void AlienBehaviorComponent::Create(AvancezLib* engine, GameObject* go, std::set<GameObject*>* game_objects, ObjectPool<AlienBomb>* bombsPool, Player* player)
+void AlienBehaviorComponent::Create(AvancezLib* engine, GameObject* go, std::set<GameObject*>* game_objects, ObjectPool<AlienBomb>* bombsPool, ObjectPool<AlienOrb>* orbsPool, Player* player)
 {
 	Component::Create(engine, go, game_objects);
 	this->bombsPool = bombsPool;
+	this->orbsPool = orbsPool;
 	this->player = player;
 }
 
@@ -60,12 +56,8 @@ void AlienBehaviorComponent::Update(float dt)
 	{
 		Fire(BOMB_SPEED);
 	}
-
-
-
 	RotateAlien();
 }
-
 
 
 void AlienBehaviorComponent::MoveAlien(float dt)
@@ -75,7 +67,6 @@ void AlienBehaviorComponent::MoveAlien(float dt)
 	oldDistance = distance;
 	distance = sqrt(pow(GAME_CENTER_X - go->position.x, 2) + pow(GAME_CENTER_Y - go->position.y, 2));
 
-	//alien->previousState = alien->currentState;
 
 	// ---------- ALIEN LOGIC ---------- //
 	/*
@@ -87,6 +78,21 @@ void AlienBehaviorComponent::MoveAlien(float dt)
 	*/
 	switch (alien->currentState)
 	{
+	case Alien::STATE_INITIAL1:
+	{
+		go->position = go->position - (go->direction * ALIEN_SPEED_BASE * dt);
+		if (distance <= alien->radius)
+		{
+			alien->originX = GAME_CENTER_X;
+			alien->originY = GAME_CENTER_Y;
+			alien->angle = atan2(go->position.y - GAME_CENTER_Y, go->position.x - GAME_CENTER_X) * (180.0f / M_PI);
+
+			alien->currentState = Alien::STATE_CIRCLE;
+			break;
+		}
+	}
+	break;
+
 	case Alien::STATE_INITIAL2:
 	{
 		if (distance <= alien->radius)
@@ -101,37 +107,22 @@ void AlienBehaviorComponent::MoveAlien(float dt)
 
 		// Parameterized lemniscate of Gerono. Notice the axes have been flipped
 		alien->angle += fmod(dt * ALIEN_SPEED_INITIAL, 360);
-		if (alien->circularDirectionZ != -1)
-		{
+		if (alien->rotateInit)
+		{ // Vertical
 			go->position.y = alien->originY + (double)200 * alien->circularDirectionY * cos(alien->angle * (M_PI / 180.0f));
 			go->position.x = alien->originX + (double)150 * alien->circularDirectionX * sin(2 * alien->angle * (M_PI / 180.0f)) / 2;
 		}
-		else
-		{
+		else 
+		{ // Horizontal
 			go->position.x = alien->originX + (double)150 * alien->circularDirectionX * cos(alien->angle * (M_PI / 180.0f));
 			go->position.y = alien->originY + (double)200 * alien->circularDirectionY * sin(2 * alien->angle * (M_PI / 180.0f)) / 2;
 		}
 	}
 	break;
 
-	case Alien::STATE_INITIAL1:
-	{
-		if (distance <= alien->radius)
-		{
-			alien->originX = GAME_CENTER_X;
-			alien->originY = GAME_CENTER_Y;
-			alien->angle = atan2(go->position.y - GAME_CENTER_Y, go->position.x - GAME_CENTER_X) * (180.0f / M_PI);
-
-			alien->currentState = Alien::STATE_CIRCLE;
-			break;
-		}
-		go->position = go->position - (go->direction * ALIEN_SPEED_BASE * dt);
-	}
-	break;
-
 	case Alien::STATE_REPOSITION:
 	{
-		float distance = sqrt(pow(alien->position.x - GAME_CENTER_X, 2) + pow(alien->position.y - GAME_CENTER_Y, 2));
+		//float distance = sqrt(pow(alien->position.x - GAME_CENTER_X, 2) + pow(alien->position.y - GAME_CENTER_Y, 2));
 		if (distance >= alien->radius)
 		{
 			alien->originX = GAME_CENTER_X;
@@ -139,7 +130,7 @@ void AlienBehaviorComponent::MoveAlien(float dt)
 			alien->angle = atan2(go->position.y - GAME_CENTER_Y, go->position.x - GAME_CENTER_X) * (180.0f / M_PI);
 
 			// Random time until return to STATE_CIRCLE
-			timeUntilReturn = engine->GetElapsedTime() + (rand() % 15 + 5);
+			timeUntilReturn = engine->GetElapsedTime() + (rand() % 10 + 2);
 
 			alien->currentState = Alien::STATE_CIRCLE_OUTER;
 			break;
@@ -152,9 +143,23 @@ void AlienBehaviorComponent::MoveAlien(float dt)
 	{
 		if (timeUntilReturn - engine->GetElapsedTime() <= 0)
 		{
-			Vector2D returnPos = Vector2D(GAME_CENTER_X, GAME_CENTER_Y);
-			float distance = sqrt(pow(returnPos.x - alien->position.x, 2) + pow(returnPos.y - alien->position.y, 2));
-			alien->direction = (alien->position - returnPos) / distance;
+			// Random point inside circle of given radius
+			double randN = rand() / (double)RAND_MAX;
+			double a = (randN) * 2 * M_PI;
+			double r = 40 * sqrt(randN);
+
+			// Convert to cartesian coordinates
+			float x = r * cos(a);
+			float y = r * sin(a);
+
+			// Set aim for center of screen.
+			Vector2D end(x, y);
+			Vector2D gameCenter(GAME_CENTER_X, GAME_CENTER_Y);
+
+			float distance = sqrt(pow(end.x - go->position.x, 2) + pow(end.y - go->position.y, 2));
+			go->direction = (go->position - gameCenter) / distance;
+
+			alien->radius = r;
 
 			alien->currentState = Alien::STATE_INITIAL1;
 			break;
@@ -177,6 +182,12 @@ void AlienBehaviorComponent::MoveAlien(float dt)
 		alien->currentState = alien->Alien::STATE_CIRCLE_OUTER;
 	}
 	break;
+	case Alien::STATE_FIRE2:
+	{
+		FireOrb(ALIEN_ORB_SPEED);
+		alien->currentState = alien->previousState;
+	}
+	break;
 	case Alien::STATE_FIRE3:
 	{
 		Fire(BOMB_NEAR_SPEED);
@@ -187,16 +198,14 @@ void AlienBehaviorComponent::MoveAlien(float dt)
 }
 
 
-
 bool AlienBehaviorComponent::CanFire()
 {
-	if (timeSinceLastFire - engine->GetElapsedTime() <= 0 && alien->shotsLeft > 0)
+	if (alien->shotsLeft > 0 && timeSinceLastFire - engine->GetElapsedTime() <= 0 )
 	{
 		return true;
 	}
 	return false;
 }
-
 
 
 void AlienBehaviorComponent::Fire(float speed)
@@ -211,7 +220,21 @@ void AlienBehaviorComponent::Fire(float speed)
 	timeSinceLastFire = engine->GetElapsedTime() + ALIEN_FIRE_INTERVAL;
 }
 
-
+void AlienBehaviorComponent::FireOrb(float speed)
+{
+	int randomOffset = rand() % 45;
+	Vector2D initialAimPosition(player->position.x + randomOffset, player->position.y + randomOffset);
+	for (int i = 0; i < ALIEN_ORBS_CONSECUTIVE_SHOTS; i++)
+	{
+		AlienOrb* orb = orbsPool->FirstAvailable();
+		if (orb != NULL)
+		{
+			Vector2D aimPosition(initialAimPosition.x + i * 25, initialAimPosition.y + i * 25);
+			orb->Init(aimPosition, ALIEN_ORB_SPEED, go->position.x, go->position.y);
+			game_objects->insert(orb);
+		}
+	}
+}
 
 // Alien sprite size changes depending on how close to the middle of the screen it is to simulate 2.5D effect
 void AlienBehaviorComponent::ResizeAlien(double oldDistance, double newDistance, float dt)
@@ -236,19 +259,16 @@ void AlienBehaviorComponent::ResizeAlien(double oldDistance, double newDistance,
 }
 
 
-
 void AlienBehaviorComponent::RotateAlien()
 {
 	go->angle = alien->angle - 90;
 }
 
 
-
 Alien::~Alien() { SDL_Log("Alien::~Alien"); }
 
 
-
-void Alien::Init(double xPos, double yPos, double xSize, double ySize, float radius, short circularDirectionX, short circularDirectionY, short circularDirectionZ, AlienState state)
+void Alien::Init(double xPos, double yPos, double xSize, double ySize, float radius, char circularDirectionX, char circularDirectionY, AlienState state)
 {
 	this->position.x = xPos;
 	this->position.y = yPos;
@@ -260,12 +280,14 @@ void Alien::Init(double xPos, double yPos, double xSize, double ySize, float rad
 	this->currentState = state;
 	this->circularDirectionX = circularDirectionX;
 	this->circularDirectionY = circularDirectionY;
-	this->circularDirectionZ = circularDirectionZ;
+	
+	// Set in Game.cpp and changes when level advances. This line is redundant
+	this->rotateInit = this->rotateInit;
 
 	// Random point inside circle of given radius
 	double randN = rand() / (double)RAND_MAX;
 	double a = (randN) * 2 * M_PI;
-	double r = (double)this->radius * sqrt(randN);
+	double r = this->radius * sqrt(randN);
 
 	// Convert to cartesian coordinates
 	float x = r * cos(a);

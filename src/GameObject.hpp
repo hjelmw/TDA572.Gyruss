@@ -16,7 +16,7 @@
 
 
 
-enum Message { HIT, ALIEN_HIT, GAME_OVER, LEVEL_WIN, NO_MSG, Quit, ALIENS_MOVE_GRID };
+enum Message { HIT, ALIEN_HIT, GAME_OVER, LEVEL_WIN, NO_MSG, Quit, NEW_LEVEL };
 class Component;
 
 // GameObject represents objects which moves are drawn
@@ -41,6 +41,7 @@ public:
 
 	virtual void Create();
 	virtual void AddComponent(Component * component);
+	virtual std::vector<Component*> GetComponents();
 
 	virtual void Init();
 	virtual void Update(float dt);

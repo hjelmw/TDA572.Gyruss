@@ -12,26 +12,30 @@
 #include "GameObject.hpp"
 #include "Avancezlib.hpp"
 
+
 #include "Alien.hpp"
+#include "AlienOrb.hpp"
 #include "Asteroid.hpp"
 #include "Common.hpp"
 
 class EnemyControllerBehaviorComponent : public Component
 {
-	float time_bomb_launched;
-	float time_alien_action;
+	float timeBombLaunched;
+	float timeAlienAction;
+	float timeAsteroidAction;
 	float alienVisionFireInterval;
-	bool change_direction;
+	bool changeDirection;
 
 	ObjectPool<Alien>* aliensPool;
 	ObjectPool<AlienBomb>* bombsPool;
 	ObjectPool<Asteroid>* asteroidsPool;
+	ObjectPool<AlienOrb>* orbsPool;
 	Player* player;
 
 public:
 	virtual ~EnemyControllerBehaviorComponent();
 
-	virtual void Create(AvancezLib* engine, GameObject* go, std::set<GameObject*>* game_objects, ObjectPool<Alien>* aliensPool, ObjectPool<AlienBomb>* bombsPool, ObjectPool<Asteroid>* asteroidsPool, Player* player);
+	virtual void Create(AvancezLib* engine, GameObject* go, std::set<GameObject*>* game_objects, ObjectPool<Alien>* aliensPool, ObjectPool<AlienBomb>* bombsPool, ObjectPool<AlienOrb>* orbsPool, ObjectPool<Asteroid>* asteroidsPool, Player* player);
 
 	virtual void Init();
 
@@ -44,18 +48,25 @@ public:
 
 	void GiveAlienRandomState(Alien* alien, Alien::AlienState state);
 
-	void spawnAsteroids();
+	bool CanSpawnAsteroids();
+
+	void SpawnAsteroids();
 
 	// Spawn aliens in grid format
-	void SpawnAliens(ObjectPool<Alien>& aliensPool);
+	void SpawnAliens(ObjectPool<Alien> * aliensPool);
 
 };
-
 
 
 class EnemyController : public GameObject
 {
 public:
+
+	float alienActionInterval;
+	float asteroidInterval;
+
+	virtual void Receive(Message m);
+
 
 	virtual ~EnemyController();
 

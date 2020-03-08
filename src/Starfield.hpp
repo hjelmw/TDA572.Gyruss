@@ -3,32 +3,36 @@
 //////////////////////////////////////////////////////////////
 //						Starfield
 // \brief Particle system for creating a field of pixels that
-//			that simulate a galaxy zooming towards the player.	
+//			that simulate stars zooming towards the player.	
 //	
-// \params AMOUNT_OF_STARS
+// \params AMOUNT_OF_STARS, STAR_SPEED_MIN, STAR_SPEED_MAX
 // \see Game.cpp
 /////////////////////////////////////////////////////////////
 
-// Particle system for generating a starfield that zooms on the Z-axis
-// Control amount of stars using AMOUNT_OF_STARS in Gyruss.cpp
-// Stars are initialzied in Game.Init 
-// Stars are continously drawn in Game.Update
 
 
 #include "avancezlib.hpp"
+#include "Vector2D.hpp"
+#include <random>
 #include <vector>
 
 class Starfield {
 private:
+	std::default_random_engine generator;
+	std::uniform_real_distribution<double> circumferenceDistribution;
+	std::uniform_real_distribution<double> radiusDistribution;
+
 	struct Star {
-		float x;
-		float y;
-		float z;
+		Vector2D position;
+		Vector2D velocity;
+		float brightness;
 	};
 	std::vector<Star> stars;
 
 	// Pointer to engine. Used for rendering starfield
 	AvancezLib* engine;
+
+
 
 public:
 	// Initializes a starfield with stars.

@@ -17,6 +17,7 @@
 #include "Component.hpp"
 #include "GameObject.hpp"
 #include "Common.hpp"
+#include <random>
 
 
 class AsteroidBehaviourComponent : public Component
@@ -28,8 +29,10 @@ public:
 
 class Asteroid : public GameObject
 {
-public:
+	Vector2D velocity;
 
-	virtual void Init(Vector2D playerPosition, double xPos, double yPos);
+public:
+	virtual ~Asteroid();
+	virtual void Init();
 	virtual void Receive(Message m);
 };

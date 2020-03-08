@@ -21,6 +21,7 @@
 #include "Sprite.hpp"
 #include "Alien.hpp"
 #include "AlienBomb.hpp"
+#include "AlienOrb.hpp"
 #include "Asteroid.hpp"
 #include "EnemyController.hpp"
 #include "Starfield.hpp"
@@ -49,15 +50,18 @@ private:
 	ObjectPool<Alien> aliensPool;
 	ObjectPool<AlienBomb> bombsPool;
 	ObjectPool<Asteroid> asteroidsPool;
+	ObjectPool<AlienOrb> orbsPool;
 
 
 	bool gameOver = false;
 	bool canSpawn = true;
+	bool spawning = false;
+	bool rotateInit;
 	float spawnDelay;
-	int spawnLeft = ALIENS_AMOUNT;
 
+	int spawnLeft = 0;
 	unsigned int score = 0;
-	unsigned int level = 1;
+	unsigned int level = 0;
 public:
 
 	virtual void Create(AvancezLib* engine);
@@ -74,5 +78,6 @@ public:
 
 	virtual void Receive(Message m);
 
-
+	// Initializes more aliens to the aliensPool. Used when incrementing level counter
+	void createMoreAliens(int numAliens, bool initRotate);
 };

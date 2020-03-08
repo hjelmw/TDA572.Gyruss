@@ -20,7 +20,7 @@ public:
 
 	void Create(unsigned int num_objects)
 	{
-		Deallocate();
+		//Deallocate();
 
 		for (unsigned int i = 0; i < num_objects; i++)
 		{

@@ -1,5 +1,6 @@
 #include "Sprite.hpp"
 
+
 Sprite::Sprite(SDL_Renderer* renderer, SDL_Texture* texture)
 {
 	Sprite::spriteDim = new SDL_Rect{ 0, 0, 0, 0 };
@@ -12,11 +13,13 @@ Sprite::Sprite(SDL_Renderer* renderer, SDL_Texture* texture)
 	SDL_QueryTexture(texture, NULL, NULL, &w, &h); // get the width and height of the texture
 }
 
+
 void Sprite::Destroy()
 {
 	SDL_DestroyTexture(texture);
 	delete spriteDim;
 }
+
 
 void Sprite::DrawSprite(int x, int y, int w, int h, int angle)
 {

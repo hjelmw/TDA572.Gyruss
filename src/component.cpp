@@ -13,12 +13,14 @@ void Component::Create(AvancezLib * engine, GameObject * go, std::set<GameObject
 	this->game_objects = game_objects;
 }
 
+
 void RenderComponent::Create(AvancezLib * engine, GameObject * go, std::set<GameObject*>* game_objects, const char * sprite_name)
 {
 	Component::Create(engine, go, game_objects);
 
 	sprite = engine->CreateSprite(sprite_name);
 }
+
 
 void RenderComponent::Update(float dt)
 {
@@ -28,6 +30,7 @@ void RenderComponent::Update(float dt)
 	if (sprite)
 		sprite->DrawSprite(int(go->position.x), int(go->position.y), int(go->width), int(go->height), (go->angle));
 }
+
 
 void RenderComponent::Destroy()
 {
@@ -63,6 +66,7 @@ void CollideComponent::Update(float dt)
 	}
 }
 
+
 void BoxCollideComponent::Create(AvancezLib* engine, GameObject* go, int xMax, int yMax)
 {
 	Component::Create(engine, go, game_objects);
@@ -72,6 +76,7 @@ void BoxCollideComponent::Create(AvancezLib* engine, GameObject* go, int xMax, i
 	this->yMin = 0;
 	this->yMax = yMax;
 }
+
 
 void BoxCollideComponent::Update(float dt)
 {
@@ -92,6 +97,7 @@ void SATCollideComponent::Create(AvancezLib* engine, GameObject* go, std::set<Ga
 
 }
 
+
 void SATCollideComponent::Update(float dt)
 {
 	for (auto i = 0; i < coll_objects->pool.size(); i++)
@@ -107,6 +113,7 @@ void SATCollideComponent::Update(float dt)
 		}
 	}
 }
+
 
 bool SATCollideComponent::CheckSATCollision(GameObject *a, GameObject *b)
 {

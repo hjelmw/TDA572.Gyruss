@@ -12,34 +12,42 @@
 
 
 
-
 #include "Asteroid.hpp"
 
 void AsteroidBehaviourComponent::Update(float dt)
 {
-	go->position.x = (go->position.x - GAME_CENTER_X) * 1.005f + GAME_CENTER_X;
-	go->position.y = (go->position.y - GAME_CENTER_Y) * 1.005f + GAME_CENTER_Y;
+	go->position.x += go->direction.x * dt;
+	go->position.y += go->direction.y * dt;
 
-	go->width += (ASTEROID_SPEED_BASE * 1.8f) * dt;
-	go->height += (ASTEROID_SPEED_BASE * 1.8f) * dt;
+	go->width  += 40 * dt;
+	go->height += 40 * dt;
 
 	go->angle += fmod((double)(dt * ASTEROID_ROTATION_SPEED), 360);
 }
 
-void Asteroid::Init(Vector2D playerPosition, double xPos, double yPos)
+void Asteroid::Init()
 {
 	SDL_Log("Asteroid::Init");
 	GameObject::Init();
 
-	position.x = xPos;
-	position.y = yPos;
+
+	float random = ((float)rand() / (float)RAND_MAX);
+	double randomAngle = (random * (4*M_PI)) - 2*M_PI;
+
+	Vector2D position(GAME_CENTER_X + cos(randomAngle) * 50, GAME_CENTER_Y + sin(randomAngle) * 50);
+	Vector2D velocity(ASTEROID_SPEED_BASE * cos(randomAngle), ASTEROID_SPEED_BASE * sin(randomAngle));
+
+	this->position.x = position.x;
+	this->position.y = position.y;
+	this->direction  = velocity;
+
 	width = 1;
 	height = 1;
-
-	// Aim for player
-	double distance = sqrt(pow(playerPosition.x - position.x, 2) + pow(playerPosition.y - position.y, 2));
-	direction = (position - playerPosition) / distance;
 }
+
+
+Asteroid::~Asteroid() { SDL_Log("Asteroid::~Asteroid"); }
+
 
 void Asteroid::Receive(Message m)
 {
@@ -48,6 +56,6 @@ void Asteroid::Receive(Message m)
 
 	if (m == HIT)
 	{
-		SDL_Log("Asteroid::Hit!");
+		//SDL_Log("Asteroid::Hit!");
 	}
 }
