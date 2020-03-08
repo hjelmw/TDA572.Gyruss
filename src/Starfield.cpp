@@ -59,7 +59,8 @@ void Starfield::DrawStars(float dt)
 		}
 
 		SDL_Rect starColor = { star.brightness + 100, star.brightness + 100, star.brightness + 100 };
-		// Ask engine to DrawSprite star
+
+		// Ask engine nicely to Draw point. Hello engine please draw this star :)
 		engine->DrawPoint(star.position.x, star.position.y, starColor);
 	}
 }

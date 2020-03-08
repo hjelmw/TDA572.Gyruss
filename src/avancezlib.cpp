@@ -11,6 +11,7 @@
 #include "avancezlib.hpp"
 
 
+
 // ------------------ ENGINE ---------------------------
 bool AvancezLib::Init(int width, int height)
 {
@@ -97,7 +98,6 @@ void AvancezLib::ProcessInput()
 {
 
 	SDL_Event event;
-
 
 	while (SDL_PollEvent(&event))
 	{
@@ -196,4 +196,18 @@ float AvancezLib::GetElapsedTime()
 	return SDL_GetTicks() / 1000.0f;
 }
 
+struct Audio {
+	std::string fileName;
+	bool playing;
 
+	void LoadAudio(const char* filename)
+	{
+
+	}
+	void Play()
+	{
+	}
+	void Stop();
+	void Resume();
+	void DeleteAudio();
+};

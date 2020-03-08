@@ -13,6 +13,7 @@
 
 // Here I can put cool functions that are often used by different classes in the game
 // Currently it's empty
+// Update: It's still empty...
 
 
 /*

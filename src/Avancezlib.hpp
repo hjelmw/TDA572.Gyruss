@@ -12,6 +12,7 @@
 #include "SDL.h"
 #include "SDL_ttf.h"
 #include "SDL_image.h"
+#include "SDL_mixer.h"
 #include "Sprite.hpp"
 #include "Common.hpp"
 #include <string>     // std::string, std::to_string
@@ -45,7 +46,7 @@ public:
 
 	// Draws point on screen
 	void DrawPoint(int x, int y, SDL_Rect color);
-
+	
 	// Return the total time spent in the game, in seconds.
 	static float GetElapsedTime();
 
@@ -63,6 +64,19 @@ public:
 
 	// Returns the keyboard status. If a flag is set, the corresponding key is being held down.
 	void GetKeyStatus(KeyStatus& keys);
+
+	struct Audio {
+		std::string fileName;
+		bool playing;
+
+		void Play();
+		void Stop();
+		void Resume();
+		void DeleteAudio();
+	};
+
+	Audio* LoadAudio(const char *filename);
+
 
 
 private:
@@ -86,5 +100,11 @@ private:
 	// Swap buffers and clear screen. Used by Render()
 	void SwapBuffers();
 	void ClearWindow();
+
+
+	//struct Audio {
+	//	std::string fileName;
+	//	bool playing;
+	//};
 };
 

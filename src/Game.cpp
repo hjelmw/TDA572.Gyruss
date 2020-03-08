@@ -262,7 +262,6 @@ void Game::Draw(float dt)
 {
 	if (gameOver)
 		engine->DrawText(GAME_CENTER_X - 100, engine->screenHeight - 200, "*** G A M E  O V E R ***");		
-	
 
 	// Update starfield
 	starField.DrawStars(dt);
@@ -281,18 +280,14 @@ void Game::Draw(float dt)
 
 	// Draw shield around player if recently hit
 	if (playerSprite->invulnerable)
-	{
 		shieldSprite->DrawSprite(playerSprite->position.x - 10, playerSprite->position.y - 10, 70, 70, 0);
-	}
-
+	
 	// Draw UI
 	engine->DrawText((engine->screenWidth / 2) - 50, 15, "Gyruss");
 	engine->DrawText((engine->screenWidth) - 170, 15, levelText.str().c_str());
 	engine->DrawText(10, 15, scoreText.str().c_str());
 	for (int i = 0; i < playerSprite->lives; i++)
-	{
 		lifeSprite->DrawSprite(i * 40 + 20, engine->screenHeight - 60, 35, 35, 0);
-	}
 }
 
 

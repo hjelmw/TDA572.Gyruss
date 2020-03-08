@@ -32,6 +32,7 @@ bool RocketBehaviourComponent::RocketShouldMove()
 
 void RocketBehaviourComponent::MoveRocket(float dt)
 {
+	// Rocket go swosh towards middle of the screen
 	go->position = go->position - (go->direction * ROCKET_SPEED * dt);
 }
 

@@ -93,8 +93,7 @@ void EnemyControllerBehaviorComponent::GiveAlienRandomState(Alien* alien, Alien:
 
 		for (int i = 0; i < ALIENS_IN_SWARM; i++)
 		{
-			Alien* alienToReposition = aliensPool->SelectRandom();
-			if (alienToReposition != NULL && alien->currentState == Alien::STATE_CIRCLE)
+			if ((alien->currentState == Alien::STATE_CIRCLE || alien->currentState == Alien::STATE_CIRCLE_OUTER))
 			{
 				// Slight variation in swarm position for each alien
 				double swarmPosX = randX + fmod(rand(), 80);
@@ -103,9 +102,9 @@ void EnemyControllerBehaviorComponent::GiveAlienRandomState(Alien* alien, Alien:
 
 				// Set alien direction to new position
 				double distance = sqrt(pow(newPosition.x - alien->position.x, 2) + pow(newPosition.y - alien->position.y, 2));
-				alienToReposition->direction = (alien->position - newPosition) / distance;
-				alienToReposition->radius = distance / 2;
-				alienToReposition->currentState = static_cast<Alien::AlienState>(alienAction);
+				alien->direction = (alien->position - newPosition) / distance;
+				alien->radius = distance / 2;
+				alien->currentState = static_cast<Alien::AlienState>(alienAction);
 			}
 		}
 		SDL_Log("Alien::Reposition");
@@ -114,10 +113,10 @@ void EnemyControllerBehaviorComponent::GiveAlienRandomState(Alien* alien, Alien:
 
 	case Alien::STATE_FIRE1:
 	{
-		Alien* alienToFire = aliensPool->SelectRandom();
-		if (alienToFire != NULL)
+		Alien* alien = aliensPool->SelectRandom();
+		if (alien != NULL)
 		{
-			alienToFire->currentState = static_cast<Alien::AlienState>(alienAction);
+			alien->currentState = static_cast<Alien::AlienState>(alienAction);
 		}
 		SDL_Log("Alien::Fire1");
 	}
@@ -136,14 +135,9 @@ void EnemyControllerBehaviorComponent::GiveAlienRandomState(Alien* alien, Alien:
 // return a random action if enough time has passed
 int EnemyControllerBehaviorComponent::AlienCanPerformRandomAction()
 {
-	float test = engine->GetElapsedTime();
 	// shoot just if enough time passed by
 	if (engine->GetElapsedTime() - timeAlienAction  < 0 )
 		return 0xFFFF;
-
-	//3% chance per frame
-	//if ((rand() / (float)RAND_MAX) < 0.97f)
-	//	return 0xFFFF;
 
 	// Random state between 4-7
 	timeAlienAction = engine->GetElapsedTime() + ((EnemyController*)go)->alienActionInterval;

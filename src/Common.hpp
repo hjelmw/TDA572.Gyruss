@@ -25,7 +25,7 @@
 
 /* Player parameters */
 #define FIRE_TIME_INTERVAL 0.2f
-#define PLAYER_SPEED 50.0f
+#define PLAYER_SPEED 40.0f
 #define ROCKET_SPEED 800.0f
 #define MAX_NUM_ROCKETS 32
 #define PLAYER_INVULNERABLE_TIME 5.0f

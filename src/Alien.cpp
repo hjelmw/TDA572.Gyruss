@@ -130,7 +130,7 @@ void AlienBehaviorComponent::MoveAlien(float dt)
 			alien->angle = atan2(go->position.y - GAME_CENTER_Y, go->position.x - GAME_CENTER_X) * (180.0f / M_PI);
 
 			// Random time until return to STATE_CIRCLE
-			timeUntilReturn = engine->GetElapsedTime() + (rand() % 10 + 2);
+			timeUntilReturn = engine->GetElapsedTime() + (rand() % 15 + 5);
 
 			alien->currentState = Alien::STATE_CIRCLE_OUTER;
 			break;
@@ -179,7 +179,7 @@ void AlienBehaviorComponent::MoveAlien(float dt)
 	{
 		alien->shotsLeft = ALIEN_CONSECUTIVE_SHOTS;
 		timeSinceLastFire = engine->GetElapsedTime() + ALIEN_FIRE_INTERVAL;
-		alien->currentState = alien->Alien::STATE_CIRCLE_OUTER;
+		alien->currentState = alien->previousState;
 	}
 	break;
 	case Alien::STATE_FIRE2:
@@ -213,7 +213,7 @@ void AlienBehaviorComponent::Fire(float speed)
 	AlienBomb* bomb = bombsPool->FirstAvailable();
 	if (bomb != NULL)
 	{
-		bomb->Init(player->position, speed, go->position.x, go->position.y);
+		bomb->Init(player->position, speed * 10, go->position.x, go->position.y);
 		game_objects->insert(bomb);
 		alien->shotsLeft--;
 	}
@@ -267,7 +267,7 @@ void AlienBehaviorComponent::RotateAlien()
 
 Alien::~Alien() { SDL_Log("Alien::~Alien"); }
 
-
+// Init function. 
 void Alien::Init(double xPos, double yPos, double xSize, double ySize, float radius, char circularDirectionX, char circularDirectionY, AlienState state)
 {
 	this->position.x = xPos;
@@ -305,11 +305,12 @@ void Alien::Init(double xPos, double yPos, double xSize, double ySize, float rad
 	this->originX = xPos;
 	this->originY = yPos;
 
-	// Print stuff to console
+	// Print stuff to console. Hello engine you can render me now
 	std::stringstream ss;
 	ss << "Alien:: Init xPos: " << this->position.x << " | yPos: " << this->position.y;
 	SDL_Log(ss.str().c_str());
 	GameObject::Init();
+	// This alien is very smart as you can tell from all the values we have to calculate
 }
 
 void Alien::Receive(Message m)

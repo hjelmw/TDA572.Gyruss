@@ -1,7 +1,7 @@
 
 //////////////////////////////////////////////////////////////
 //						Gyruss
-// \brief The main file. Comprised of an engine and game logic
+// \brief The main file. Contains main game loop for Gyruss
 //
 //
 // \see Game.cpp
@@ -11,6 +11,7 @@
 
 #include "Avancezlib.hpp"
 #include "Game.hpp"
+#include "SDL_mixer.h"
 
 int main(int argc, char** argv)
 {
@@ -22,6 +23,12 @@ int main(int argc, char** argv)
 	game.Init();
 
 	float lastTime = engine.GetElapsedTime();
+
+	Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048);
+
+	/*Mix_Music* bgm = Mix_LoadMUS("data/boss_battle.mp3");
+	if (!Mix_PlayingMusic())
+		Mix_PlayMusic(bgm, -1);*/
 
 	while (engine.IsRunning())
 	{

@@ -32,8 +32,8 @@ void AlienOrb::Init(Vector2D aimPosition, double speed, double xPos, double yPos
 	this->position.x = xPos;
 	this->position.y = yPos;
 	this->orbSpeed = speed;
-	this->width = 15;
-	this->height = 15;
+	this->width = 5;
+	this->height = 5;
 
 	this->angle = atan2(aimPosition.y - this->position.y, aimPosition.x - this->position.x) * (180.0f / M_PI);
 
