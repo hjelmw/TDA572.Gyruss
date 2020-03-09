@@ -66,6 +66,26 @@ void Game::Create(AvancezLib* engine)
 	}
 
 
+	powerupsPool.Create(MAX_NUM_POWERUPS);
+	for (auto powerup = powerupsPool.pool.begin(); powerup != powerupsPool.pool.end(); powerup++)
+	{
+		PowerupBehaviorComponent* powerup_behavior = new PowerupBehaviorComponent();
+		powerup_behavior->Create(engine, *powerup, &game_objects);
+
+		CollideComponent* powerup_player_collision = new CollideComponent();
+		powerup_player_collision->Create(engine, playerSprite, &game_objects, reinterpret_cast<ObjectPool<GameObject>*>(&powerupsPool));
+
+		RenderComponent* powerup_render = new RenderComponent();
+		powerup_render->Create(engine, *powerup, &game_objects, "data/orb_green.png");
+
+		(*powerup)->Create();
+		(*powerup)->AddComponent(powerup_behavior);
+		(*powerup)->AddComponent(powerup_player_collision);
+		(*powerup)->AddComponent(powerup_render);
+		(*powerup)->AddReceiver(this);
+	}
+
+
 	// Creates initial alien pool.
 	// In game loop Game::CreateMoreAliens(amount) is insteead used
 	// which performs almost the same function. This part is kept for code consistency
@@ -168,7 +188,6 @@ void Game::Create(AvancezLib* engine)
 	EnemyControllerBehaviorComponent* aliens_behaviour = new EnemyControllerBehaviorComponent();
 	aliens_behaviour->Create(engine, aliens_grid, &game_objects, &aliensPool, &bombsPool, &orbsPool, &asteroidsPool, playerSprite);
 
-
 	aliens_grid->Create();
 	aliens_grid->AddReceiver(this);
 	aliens_grid->AddComponent(aliens_behaviour);
@@ -183,18 +202,31 @@ void Game::Create(AvancezLib* engine)
 	planetSprite = engine->CreateSprite("data/planet.png");
 	lifeSprite = engine->CreateSprite("data/life.png");
 	shieldSprite = engine->CreateSprite("data/shield_min.png");
+
+	engine->InitAudio();
+	backgroundAudio = engine->LoadAudio("data/boss_battle.mp3", true);
+	alienHitAudio = engine->LoadAudio("data/hit.wav", false);
+	pickupAudio = engine->LoadAudio("data/powerup.wav", false);
 }
 
 
 void Game::Init()
 {
 	playerSprite->Init();
-	spawnDelay = engine->GetElapsedTime() + ALIENS_SPAWN_TIME;
+
+	// Aliens spawn after 5 seconds initially
+	spawnDelay = engine->GetElapsedTime() + 5;
+
+	// No powerup at startup
+	powerupSpawnDelay = engine->GetElapsedTime() + POWERUP_SPAWN_INTERVAL;
 	
 	// Skip instant level increment and just spawn aliens
 	canSpawn = true;
 	spawning = true;
 	spawnLeft = ALIENS_AMOUNT;
+
+	// Background music loops indefinitely
+	//backgroundAudio->Play(-1);
 
 	enabled = true;
 }
@@ -222,6 +254,19 @@ void Game::Update(float dt)
 		(*go)->Update(dt);
 
 
+	// Can we spawn a powerup?
+	if (powerupSpawnDelay - engine->GetElapsedTime() < 0)
+	{
+		Powerup* powerup = powerupsPool.FirstAvailable();
+		if (powerup != NULL)
+		{
+			powerup->Init();
+			game_objects.insert(powerup);
+		}
+		powerupSpawnDelay = engine->GetElapsedTime() + POWERUP_SPAWN_INTERVAL;
+	}
+
+
 	// All aliens are dead means we can advance to next level
 	bool areAliensStillThere = false;
 	for (auto alien = aliensPool.pool.begin(); alien != aliensPool.pool.end(); alien++)
@@ -242,6 +287,7 @@ void Game::Update(float dt)
 
 		createMoreAliens(ALIENS_AMOUNT, rotateInit);
 	}
+
 
 	// Next level means we spawn more aliens
 	if (canSpawn && spawning && spawnDelay - engine->GetElapsedTime() < 0)
@@ -302,6 +348,13 @@ void Game::Receive(Message m)
 	{
 		canSpawn = true;
 		score += 100;
+		alienHitAudio->Play(0);
+	}
+
+	if (m == POWERUP_PICKUP)
+	{
+		playerSprite->Receive(POWERUP_PICKUP);
+		pickupAudio->Play(0);
 	}
 
 }
@@ -319,6 +372,9 @@ void Game::Destroy()
 	aliensPool.Destroy();
 	bombsPool.Destroy();
 	rocketsPool.Destroy();
+
+	backgroundAudio->Destroy();
+	alienHitAudio->Destroy();
 
 	game_objects.clear();
 }

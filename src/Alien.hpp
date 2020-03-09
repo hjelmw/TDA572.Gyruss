@@ -117,10 +117,13 @@ private:
 
 	void MoveAlien(float dt);
 
+	// Alien can only fire on an interval and if it has ammunition left
 	bool CanFire();
 
+	// Fires a single rocket towards player. STATE_FIRE3: slow moving STATE_FIRE1: burst
 	void Fire(float speed);
 
+	// Fires a group of energy orbs that travel in unison towards the player
 	void FireOrb(float speed);
 
 	// Alien sprite size changes depending on how close to the middle of the screen it is to simulate 2.5D effect

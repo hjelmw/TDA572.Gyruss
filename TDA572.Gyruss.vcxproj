@@ -22,6 +22,7 @@
     <ClInclude Include="src\Alien.hpp" />
     <ClInclude Include="src\AlienBomb.hpp" />
     <ClInclude Include="src\Asteroid.hpp" />
+    <ClInclude Include="src\Audio.hpp" />
     <ClInclude Include="src\Avancezlib.hpp" />
     <ClInclude Include="src\Common.hpp" />
     <ClInclude Include="src\Component.hpp" />
@@ -31,6 +32,7 @@
     <ClInclude Include="src\ObjectPool.hpp" />
     <ClInclude Include="src\AlienOrb.hpp" />
     <ClInclude Include="src\Player.hpp" />
+    <ClInclude Include="src\Powerup.hpp" />
     <ClInclude Include="src\Rocket.hpp" />
     <ClInclude Include="src\Sprite.hpp" />
     <ClInclude Include="src\Starfield.hpp" />
@@ -40,6 +42,7 @@
     <ClCompile Include="src\Alien.cpp" />
     <ClCompile Include="src\AlienBomb.cpp" />
     <ClCompile Include="src\Asteroid.cpp" />
+    <ClCompile Include="src\Audio.cpp" />
     <ClCompile Include="src\Avancezlib.cpp" />
     <ClCompile Include="src\Common.cpp" />
     <ClCompile Include="src\Component.cpp" />
@@ -49,6 +52,7 @@
     <ClCompile Include="src\Gyruss.cpp" />
     <ClCompile Include="src\AlienOrb.cpp" />
     <ClCompile Include="src\Player.cpp" />
+    <ClCompile Include="src\Powerup.cpp" />
     <ClCompile Include="src\Rocket.cpp" />
     <ClCompile Include="src\Sprite.cpp" />
     <ClCompile Include="src\Starfield.cpp" />

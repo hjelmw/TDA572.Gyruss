@@ -17,7 +17,7 @@
 EnemyControllerBehaviorComponent::~EnemyControllerBehaviorComponent() {}
 
 
-void EnemyControllerBehaviorComponent::Create(AvancezLib* engine, GameObject* go, std::set<GameObject*>* game_objects, ObjectPool<Alien>* aliensPool, ObjectPool<AlienBomb>* bombsPool, ObjectPool<AlienOrb>* orbsPool, ObjectPool<Asteroid>* asteroidsPool,Player* player)
+void EnemyControllerBehaviorComponent::Create(AvancezLib* engine, GameObject* go, std::set<GameObject*>* game_objects, ObjectPool<Alien>* aliensPool, ObjectPool<AlienBomb>* bombsPool, ObjectPool<AlienOrb>* orbsPool, ObjectPool<Asteroid>* asteroidsPool, Player* player)
 {
 	Component::Create(engine, go, game_objects);
 
@@ -37,7 +37,7 @@ void EnemyControllerBehaviorComponent::Init()
 {
 	timeAlienAction = engine->GetElapsedTime() + ((EnemyController*)go)->alienActionInterval;
 
- 	SpawnAliens(aliensPool);
+	SpawnAliens(aliensPool);
 
 	changeDirection = false;
 }
@@ -50,7 +50,7 @@ void EnemyControllerBehaviorComponent::Update(float dt)
 	{
 		double distanceToPlayer = sqrt(pow(player->position.x - alien->position.x, 2) + pow(player->position.y - alien->position.y, 2));
 
-		if (AlienCanSeePlayer(alien) && (alienVisionFireInterval - engine->GetElapsedTime() < 0))
+		if (AlienCanSeePlayer(alien) && (alienVisionFireInterval - engine->GetElapsedTime() < 0) && alien->currentState != Alien::STATE_REPOSITION)
 		{
 			alien->currentState = Alien::STATE_FIRE3;
 			alienVisionFireInterval = engine->GetElapsedTime() + ALIEN_NEAR_FIRE_INTERVAL;
@@ -62,6 +62,7 @@ void EnemyControllerBehaviorComponent::Update(float dt)
 		{
 			if (alien->currentState != Alien::STATE_INITIAL2 && alien->currentState != Alien::STATE_INITIAL1)
 			{
+				alien->previousState = alien->currentState;
 				GiveAlienRandomState(alien, static_cast<Alien::AlienState>(randomAlienAction));
 			}
 		}
@@ -74,7 +75,7 @@ void EnemyControllerBehaviorComponent::Update(float dt)
 }
 
 
-bool EnemyControllerBehaviorComponent::AlienCanSeePlayer(Alien * alien)
+bool EnemyControllerBehaviorComponent::AlienCanSeePlayer(Alien* alien)
 {
 	double distanceToPlayer = sqrt(pow(player->position.x - alien->position.x, 2) + pow(player->position.y - alien->position.y, 2));
 	return distanceToPlayer < ALIEN_NEAR_VISION_DISTANCE && alien->currentState != Alien::STATE_INITIAL2;
@@ -90,22 +91,18 @@ void EnemyControllerBehaviorComponent::GiveAlienRandomState(Alien* alien, Alien:
 		// Generate new random position for the swarm
 		int randX = rand() % ((engine->screenWidth / 2) - 50) + 400;
 		int randY = rand() % ((engine->screenHeight / 2) - 50) + 400;
-
-		for (int i = 0; i < ALIENS_IN_SWARM; i++)
+		if ((alien->currentState == Alien::STATE_CIRCLE || alien->currentState == Alien::STATE_CIRCLE_OUTER))
 		{
-			if ((alien->currentState == Alien::STATE_CIRCLE || alien->currentState == Alien::STATE_CIRCLE_OUTER))
-			{
-				// Slight variation in swarm position for each alien
-				double swarmPosX = randX + fmod(rand(), 80);
-				double swarmPosY = randX + fmod(rand(), 80);
-				Vector2D newPosition = Vector2D(swarmPosX, swarmPosY);
+			// Slight variation in swarm position for each alien
+			double swarmPosX = randX + fmod(rand(), 80);
+			double swarmPosY = randX + fmod(rand(), 80);
+			Vector2D newPosition = Vector2D(swarmPosX, swarmPosY);
 
-				// Set alien direction to new position
-				double distance = sqrt(pow(newPosition.x - alien->position.x, 2) + pow(newPosition.y - alien->position.y, 2));
-				alien->direction = (alien->position - newPosition) / distance;
-				alien->radius = distance / 2;
-				alien->currentState = static_cast<Alien::AlienState>(alienAction);
-			}
+			// Set alien direction to new position
+			double distance = sqrt(pow(newPosition.x - alien->position.x, 2) + pow(newPosition.y - alien->position.y, 2));
+			alien->direction = (alien->position - newPosition) / distance;
+			alien->radius = distance / 2;
+			alien->currentState = static_cast<Alien::AlienState>(alienAction);
 		}
 		SDL_Log("Alien::Reposition");
 	}
@@ -113,11 +110,7 @@ void EnemyControllerBehaviorComponent::GiveAlienRandomState(Alien* alien, Alien:
 
 	case Alien::STATE_FIRE1:
 	{
-		Alien* alien = aliensPool->SelectRandom();
-		if (alien != NULL)
-		{
-			alien->currentState = static_cast<Alien::AlienState>(alienAction);
-		}
+		alien->currentState = static_cast<Alien::AlienState>(alienAction);
 		SDL_Log("Alien::Fire1");
 	}
 	break;
@@ -136,21 +129,22 @@ void EnemyControllerBehaviorComponent::GiveAlienRandomState(Alien* alien, Alien:
 int EnemyControllerBehaviorComponent::AlienCanPerformRandomAction()
 {
 	// shoot just if enough time passed by
-	if (engine->GetElapsedTime() - timeAlienAction  < 0 )
+	if (engine->GetElapsedTime() - timeAlienAction < 0)
 		return 0xFFFF;
 
 	// Random state between 4-7
 	timeAlienAction = engine->GetElapsedTime() + ((EnemyController*)go)->alienActionInterval;
 	int randomAction = rand() % 7 + 4;
 
-	return randomAction;
+	//return randomAction;
+	return 6;
 }
 
 
 bool EnemyControllerBehaviorComponent::CanSpawnAsteroids()
 {
 	// Asteroids spawn on an interval
-	if ((engine->GetElapsedTime() - timeAsteroidAction) < 0 )
+	if ((engine->GetElapsedTime() - timeAsteroidAction) < 0)
 		return false;
 
 	//3% chance per frame
@@ -160,7 +154,6 @@ bool EnemyControllerBehaviorComponent::CanSpawnAsteroids()
 	timeAsteroidAction = engine->GetElapsedTime() + ((EnemyController*)go)->asteroidInterval;
 
 	return true;
-	//return 4;
 }
 
 
@@ -181,7 +174,7 @@ void EnemyControllerBehaviorComponent::SpawnAsteroids()
 
 // Spawn aliens in grid format
 // Direction controls initial lemniscate of bernoulli movement (true: horizontal, false: vertical)
-void EnemyControllerBehaviorComponent::SpawnAliens(ObjectPool<Alien> *aliensPool)
+void EnemyControllerBehaviorComponent::SpawnAliens(ObjectPool<Alien>* aliensPool)
 {
 	char j = 1;
 	char k = 1;
@@ -193,7 +186,7 @@ void EnemyControllerBehaviorComponent::SpawnAliens(ObjectPool<Alien> *aliensPool
 		(*alien).Init(GAME_CENTER_X + 50 * j, GAME_CENTER_Y + 70 * k, 1, 1, 60.0f, j, k, Alien::STATE_INITIAL2);
 		game_objects->insert(alien);
 
-			// A little ugly but it works
+		// A little ugly but it works
 		j *= -1;
 		if (j == -1)
 			k *= -1;

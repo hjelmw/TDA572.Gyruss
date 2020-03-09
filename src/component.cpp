@@ -13,11 +13,23 @@ void Component::Create(AvancezLib * engine, GameObject * go, std::set<GameObject
 	this->game_objects = game_objects;
 }
 
-
+// Render simple sprite
 void RenderComponent::Create(AvancezLib * engine, GameObject * go, std::set<GameObject*>* game_objects, const char * sprite_name)
 {
 	Component::Create(engine, go, game_objects);
 
+	this->animation = false;
+	sprite = engine->CreateSprite(sprite_name);
+}
+
+// Render sprite animation
+void RenderComponent::Create(AvancezLib* engine, GameObject* go, std::set<GameObject*>* game_objects, const char* sprite_name, int frames, float frameDelay)
+{
+	Component::Create(engine, go, game_objects);
+
+	this->animation = true;
+	this->frames = frames;
+	this->frameDelay = frameDelay;
 	sprite = engine->CreateSprite(sprite_name);
 }
 

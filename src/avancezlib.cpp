@@ -63,6 +63,7 @@ bool AvancezLib::Init(int width, int height)
 	return true;
 }
 
+
 void AvancezLib::SwapBuffers()
 {
 	SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0);
@@ -75,12 +76,14 @@ void AvancezLib::ClearWindow()
 	SDL_RenderClear(renderer);
 }
 
+
 void AvancezLib::Destroy()
 {
 	SDL_DestroyRenderer(renderer);
 	SDL_DestroyWindow(window);
 	TTF_Quit();
 }
+
 
 void AvancezLib::Quit()
 {
@@ -89,10 +92,12 @@ void AvancezLib::Quit()
 	running = false;
 }
 
+
 bool AvancezLib::IsRunning() 
 {
 	return running;
 }
+
 
 void AvancezLib::ProcessInput()
 {
@@ -101,7 +106,6 @@ void AvancezLib::ProcessInput()
 
 	while (SDL_PollEvent(&event))
 	{
-
 		if (event.type == SDL_KEYDOWN)
 		{
 			switch (event.key.keysym.sym)
@@ -121,7 +125,6 @@ void AvancezLib::ProcessInput()
 				break;
 			}
 		}
-
 		if (event.type == SDL_KEYUP)
 		{
 			switch (event.key.keysym.sym)
@@ -141,16 +144,19 @@ void AvancezLib::ProcessInput()
 	}
 }
 
+
 void AvancezLib::Render()
 {
 	SwapBuffers();
 	ClearWindow();
 }
 
+
 void AvancezLib::GetKeyStatus(KeyStatus& keys)
 {
 	keys = keyStatus;
 }
+
 
 void AvancezLib::DrawText(int x, int y, const char *msg)
 {
@@ -167,6 +173,7 @@ void AvancezLib::DrawText(int x, int y, const char *msg)
 	SDL_DestroyTexture(texture); // Free up texture
 	SDL_FreeSurface(surface);    // Free up surface
 }
+
 
 void AvancezLib::DrawPoint(int x, int y, SDL_Rect color)
 {
@@ -185,29 +192,29 @@ void AvancezLib::DrawPoint(int x, int y, SDL_Rect color)
 	SDL_RenderDrawPoint(renderer, x - 1, y - 1);
 }
 
+
 Sprite* AvancezLib::CreateSprite(const char *name)
 {
 	SDL_Texture *spriteTexture = IMG_LoadTexture(renderer, name);
 	return new Sprite(renderer, spriteTexture);
 }
 
+
 float AvancezLib::GetElapsedTime()
 {
 	return SDL_GetTicks() / 1000.0f;
 }
 
-struct Audio {
-	std::string fileName;
-	bool playing;
 
-	void LoadAudio(const char* filename)
-	{
+void AvancezLib::InitAudio()
+{
+	Mix_OpenAudio(22050, MIX_DEFAULT_FORMAT, 2, 2048);
+	Mix_VolumeMusic(64);
+}
 
-	}
-	void Play()
-	{
-	}
-	void Stop();
-	void Resume();
-	void DeleteAudio();
-};
+
+Audio* AvancezLib::LoadAudio(const char* filename, bool type)
+{
+	return new Audio(filename, type);
+}
+

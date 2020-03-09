@@ -1,11 +1,28 @@
-Player sprite by traveladdiction: https://www.clipartkey.com/view/iRhiwi_8-bit-spaceship-png-8-bit-spaceship-sprites/
+CREDITS
 
-Laser sound effect: https://freesound.org/people/MusicLegends/sounds/344310/
+//////////////////////////////////////////////////
+//
+//
+// Assets used for the game
+//
+//
+//////////////////////////////////////////////////
 
+
+
+/* Sprites */
+Player sprite: https://www.clipartkey.com/view/iRhiwi_8-bit-spaceship-png-8-bit-spaceship-sprites/
+Explosion sprite: https://www.dreamstime.com/stock-illustration-pixel-art-explosion-abstract-bomb-mosaic-vector-illustration-isolated-white-background-image89184168
+Asteroid: https://opengameart.org/content/brown-asteroid
+Purple laser: https://redhulimachinelearning.com/game-development/creating-a-game-in-pygame-enemy-ai-2-of-2/
+Green planet: https://opengameart.org/content/generic-planet-green-gas-giant
+Orbs: https://opengameart.org/content/pixel-orbs
+
+
+/* Sound effects */
+Laser sound effect: https://freesound.org/people/MusicLegends/sounds/344312/
 Explosion sound effect: https://freesound.org/people/MusicLegends/sounds/344303/
 
-Explosion spritehttps://www.dreamstime.com/stock-illustration-pixel-art-explosion-abstract-bomb-mosaic-vector-illustration-isolated-white-background-image89184168
 
-Asteroid: https://opengameart.org/content/brown-asteroid
-
-Purple laser: https://redhulimachinelearning.com/game-development/creating-a-game-in-pygame-enemy-ai-2-of-2/
+/* Music */
+8-bit boss battle theme: https://www.youtube.com/watch?v=NzFKyZc_va4

@@ -14,15 +14,19 @@
 #include "Component.hpp"
 #include "GameObject.hpp"
 #include "ObjectPool.hpp"
+
 #include "AvancezLib.hpp"
+#include "Sprite.hpp"
+#include "Audio.hpp"
 
 #include "Player.hpp"
 #include "Rocket.hpp"
-#include "Sprite.hpp"
+
 #include "Alien.hpp"
 #include "AlienBomb.hpp"
 #include "AlienOrb.hpp"
 #include "Asteroid.hpp"
+#include "Powerup.hpp"
 #include "EnemyController.hpp"
 #include "Starfield.hpp"
 #include "Common.hpp"
@@ -42,22 +46,27 @@ private:
 	Sprite* lifeSprite;
 	Sprite* planetSprite;
 	Sprite* shieldSprite;
+
 	EnemyController* aliens_grid;
 	Starfield starField;
 
+	Audio* backgroundAudio;
+	Audio* alienHitAudio;
+	Audio* pickupAudio;
 
 	ObjectPool<Rocket> rocketsPool;	
 	ObjectPool<Alien> aliensPool;
 	ObjectPool<AlienBomb> bombsPool;
 	ObjectPool<Asteroid> asteroidsPool;
 	ObjectPool<AlienOrb> orbsPool;
-
+	ObjectPool<Powerup> powerupsPool;
 
 	bool gameOver = false;
 	bool canSpawn = true;
 	bool spawning = false;
 	bool rotateInit;
 	float spawnDelay;
+	float powerupSpawnDelay;
 
 	int spawnLeft = 0;
 	unsigned int score = 0;

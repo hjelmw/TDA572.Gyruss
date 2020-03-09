@@ -104,7 +104,6 @@ void AlienBehaviorComponent::MoveAlien(float dt)
 			alien->currentState = Alien::STATE_CIRCLE;
 			break;
 		}
-
 		// Parameterized lemniscate of Gerono. Notice the axes have been flipped
 		alien->angle += fmod(dt * ALIEN_SPEED_INITIAL, 360);
 		if (alien->rotateInit)
@@ -122,7 +121,6 @@ void AlienBehaviorComponent::MoveAlien(float dt)
 
 	case Alien::STATE_REPOSITION:
 	{
-		//float distance = sqrt(pow(alien->position.x - GAME_CENTER_X, 2) + pow(alien->position.y - GAME_CENTER_Y, 2));
 		if (distance >= alien->radius)
 		{
 			alien->originX = GAME_CENTER_X;
@@ -200,8 +198,10 @@ void AlienBehaviorComponent::MoveAlien(float dt)
 
 bool AlienBehaviorComponent::CanFire()
 {
-	if (alien->shotsLeft > 0 && timeSinceLastFire - engine->GetElapsedTime() <= 0 )
+	if (alien->shotsLeft > 0 && timeSinceLastFire - engine->GetElapsedTime() < 0 )
 	{
+		alien->shotsLeft--;
+		timeSinceLastFire = engine->GetElapsedTime() + ALIEN_FIRE_INTERVAL;
 		return true;
 	}
 	return false;
@@ -213,12 +213,12 @@ void AlienBehaviorComponent::Fire(float speed)
 	AlienBomb* bomb = bombsPool->FirstAvailable();
 	if (bomb != NULL)
 	{
-		bomb->Init(player->position, speed * 10, go->position.x, go->position.y);
+		bomb->Init(player->position, speed, go->position.x, go->position.y);
 		game_objects->insert(bomb);
-		alien->shotsLeft--;
 	}
-	timeSinceLastFire = engine->GetElapsedTime() + ALIEN_FIRE_INTERVAL;
+	timeSinceLastFire = engine->GetElapsedTime() + ALIEN_NEAR_FIRE_INTERVAL;
 }
+
 
 void AlienBehaviorComponent::FireOrb(float speed)
 {
@@ -229,12 +229,13 @@ void AlienBehaviorComponent::FireOrb(float speed)
 		AlienOrb* orb = orbsPool->FirstAvailable();
 		if (orb != NULL)
 		{
-			Vector2D aimPosition(initialAimPosition.x + i * 25, initialAimPosition.y + i * 25);
+			Vector2D aimPosition(initialAimPosition.x + i * 160, initialAimPosition.y + i * 160);
 			orb->Init(aimPosition, ALIEN_ORB_SPEED, go->position.x, go->position.y);
 			game_objects->insert(orb);
 		}
 	}
 }
+
 
 // Alien sprite size changes depending on how close to the middle of the screen it is to simulate 2.5D effect
 void AlienBehaviorComponent::ResizeAlien(double oldDistance, double newDistance, float dt)

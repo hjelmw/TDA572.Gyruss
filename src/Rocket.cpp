@@ -25,16 +25,19 @@ void RocketBehaviourComponent::Update(float dt)
 		go->enabled = false;
 }
 
+
 bool RocketBehaviourComponent::RocketShouldMove()
 {
 	return (go->width >= 2 && go->height >= 2);
 }
+
 
 void RocketBehaviourComponent::MoveRocket(float dt)
 {
 	// Rocket go swosh towards middle of the screen
 	go->position = go->position - (go->direction * ROCKET_SPEED * dt);
 }
+
 
 void RocketBehaviourComponent::ShrinkRocket(float dt)
 {
@@ -44,12 +47,13 @@ void RocketBehaviourComponent::ShrinkRocket(float dt)
 
 
 // rockets are shot by the player towards the aliens
-void Rocket::Init(double xPos, double yPos)
+void Rocket::Init(double xPos, double yPos, bool piercing)
 {
-	position.x = xPos;
-	position.y = yPos;
-	width = 32;
-	height = 32;
+	this->position.x = xPos;
+	this->position.y = yPos;
+	this->width  = 32;
+	this->height = 32;
+	this->piercing = piercing;
 
 	// quick maths
 	Vector2D end(GAME_CENTER_X, GAME_CENTER_Y);
@@ -63,6 +67,7 @@ void Rocket::Init(double xPos, double yPos)
 	GameObject::Init();
 }
 
+
 void Rocket::Receive(Message m)
 {
 	if (!enabled)
@@ -70,7 +75,8 @@ void Rocket::Receive(Message m)
 
 	if (m == HIT)
 	{
-		enabled = false;
+		// Piercing shots go through aliens
+  		enabled = piercing ? true : false;
 		SDL_Log("Rocket::Hit");
 	}
 }

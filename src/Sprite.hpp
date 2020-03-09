@@ -18,6 +18,10 @@ private:
 	SDL_Renderer* renderer;
 	SDL_Texture* texture;
 
+	bool animated;
+	int frames;
+	int frameDelay;
+
 public:
 	SDL_Rect* spriteDim;
 

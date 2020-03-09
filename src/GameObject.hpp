@@ -16,7 +16,7 @@
 
 
 
-enum Message { HIT, ALIEN_HIT, GAME_OVER, LEVEL_WIN, NO_MSG, Quit, NEW_LEVEL };
+enum Message { HIT, ALIEN_HIT, GAME_OVER, LEVEL_WIN, NO_MSG, Quit, NEW_LEVEL, POWERUP_PICKUP };
 class Component;
 
 // GameObject represents objects which moves are drawn

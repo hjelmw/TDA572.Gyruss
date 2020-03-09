@@ -37,6 +37,9 @@ void PlayerBehaviourComponent::Init()
 	go->position.y = (double) (originY + radius * sin((angle * (M_PI / 180.0f))));
 
 	time_fire_pressed = -10000.f;
+
+	playerFire = engine->LoadAudio("data/fire.wav", false);
+	laserFire = engine->LoadAudio("data/laser.wav", false);
 }
 
 // Player can move left, right or fire rockets towards the middle of the screen
@@ -45,7 +48,10 @@ void PlayerBehaviourComponent::Update(float dt)
 	auto* player = (Player*)go;
 
 	if (player->invulnerabilityTime - engine->GetElapsedTime() < 0)
+	{
 		player->invulnerable = false;
+		player->shotsPiercing = false;
+	}
 
 	AvancezLib::KeyStatus keys;
 	engine->GetKeyStatus(keys);
@@ -65,8 +71,14 @@ void PlayerBehaviourComponent::Update(float dt)
 			Rocket* rocket = rocketsPool->FirstAvailable();
 			if (rocket != NULL)	// rocket is NULL is the object pool can not provide an object
 			{
-				rocket->Init(go->position.x, go->position.y);
+				rocket->Init(go->position.x, go->position.y, player->shotsPiercing);
 				game_objects->insert(rocket);
+
+				if (player->shotsPiercing)
+					laserFire->Play(0);
+				else
+					playerFire->Play(0);
+
 			}
 		}
 	}
@@ -131,10 +143,12 @@ void Player::Receive(Message m)
 			RemoveLife();
 			if (lives < 0)
 				Send(GAME_OVER);
-
-			invulnerabilityTime = AvancezLib::GetElapsedTime() + PLAYER_INVULNERABLE_TIME;
 		}
-		invulnerable = true;
+	}
+
+	if (m == POWERUP_PICKUP)
+	{
+		PickeUpPowerup();
 	}
 }
 
@@ -142,5 +156,14 @@ void Player::RemoveLife()
 {
 	lives--;
 	invulnerable = true;
-	SDL_Log("remaining lives %d", lives);
+	invulnerabilityTime = AvancezLib::GetElapsedTime() + PLAYER_INVULNERABLE_TIME;
+	//SDL_Log("remaining lives %d", lives);
+}
+
+void Player::PickeUpPowerup()
+{
+	lives++;
+	invulnerable = true;
+	shotsPiercing = true;
+	invulnerabilityTime = AvancezLib::GetElapsedTime() + PLAYER_INVULNERABLE_TIME;
 }

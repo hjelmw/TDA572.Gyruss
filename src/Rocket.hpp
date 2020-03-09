@@ -30,8 +30,10 @@ public:
 // rockets are shot by the player towards the aliens
 class Rocket : public GameObject
 {
+bool piercing;
+
 public:
-	virtual void Init(double xPos, double yPos);
+	virtual void Init(double xPos, double yPos, bool piercing);
 
 	virtual void Receive(Message m);
 };

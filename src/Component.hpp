@@ -40,10 +40,15 @@ public:
 class RenderComponent : public Component
 {
 	Sprite* sprite;
+	
+	bool animation;
+	int frames;
+	float frameDelay;
 
 public:
 
 	virtual void Create(AvancezLib* engine, GameObject * go, std::set<GameObject*> * game_objects, const char * sprite_name);
+	virtual void Create(AvancezLib* engine, GameObject* go, std::set<GameObject*>* game_objects, const char* sprite_name, int frames, float frameDelay);
 	virtual void Update(float dt);
 	virtual void Destroy();
 
@@ -54,11 +59,13 @@ public:
 class CollideComponent : public Component
 {
 	ObjectPool<GameObject> * coll_objects; // collision will be tested with these objects
+	
 
 public:
 	virtual void Create(AvancezLib* engine, GameObject * go, std::set<GameObject*> * game_objects, ObjectPool<GameObject> * coll_objects);
 	virtual void Update(float dt);
 };
+
 
 class BoxCollideComponent : public Component
 {
@@ -71,7 +78,9 @@ public:
 	virtual void Update(float dt);
 };
 
+
 // Separating Axis Theorem collision testing (SAT)
+// Not used
 class SATCollideComponent : public Component
 {
 	ObjectPool<GameObject>* coll_objects;

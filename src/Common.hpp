@@ -15,6 +15,8 @@
 #define	POINTS_PER_ALIEN 100
 #define ENEMY_DIFFICULTY_INCREMENT 0.2
 #define ASTEROID_DIFFICULTY_INCREMENT 0.5
+#define POWERUP_SPAWN_INTERVAL 60.0f
+#define MAX_NUM_POWERUPS 5
 #define	NUM_LIVES 4
 
 /* Star field particel system parameters */
@@ -25,31 +27,31 @@
 
 /* Player parameters */
 #define FIRE_TIME_INTERVAL 0.2f
-#define PLAYER_SPEED 40.0f
+#define PLAYER_SPEED 30.0f
 #define ROCKET_SPEED 800.0f
 #define MAX_NUM_ROCKETS 32
 #define PLAYER_INVULNERABLE_TIME 5.0f
 
 
 /* Alien ship parameters */
-#define ENEMY_ACTION_INTERVAL 1.4f
+#define ENEMY_ACTION_INTERVAL 2.0f
 #define ALIEN_SPEED_BASE 400.0f
 #define ALIEN_SPEED_INITIAL 40.0f
 #define ALIEN_SPEED_CIRCLE 30.0f
 #define ALIEN_SIZE_SPEED 10.0f
-#define ALIEN_FIRE_INTERVAL 0.3f
+#define ALIEN_FIRE_INTERVAL 0.7
 #define ALIEN_CONSECUTIVE_SHOTS 10
 #define ALIEN_ORBS_CONSECUTIVE_SHOTS 7
 #define ALIEN_NEAR_VISION_DISTANCE 340
-#define ALIEN_NEAR_FIRE_INTERVAL 0.7f
+#define ALIEN_NEAR_FIRE_INTERVAL 1.0f
 
 
 /* Alien bomb parameters */
 #define BOMB_NEAR_SPEED 80.0f
 #define BOMB_SPEED 200.0f
-#define ALIEN_ORB_SPEED 250.0f
-#define MAX_NUM_ORBS 60
-#define MAX_NUM_BOMBS 32
+#define ALIEN_ORB_SPEED 200.0f
+#define MAX_NUM_ORBS 200
+#define MAX_NUM_BOMBS 150
 
 
 /* Other enemy parameters */
@@ -60,7 +62,7 @@
 
 
 /* Asteroid parameters */
-#define ASTEROIDS_AMOUNT 3
+#define ASTEROIDS_AMOUNT 5
 #define ASTEROID_TIME_INTERVAL 7.0f
 #define ASTEROID_SPEED_BASE 200.0f
 #define ASTEROID_ROTATION_SPEED 60.0f

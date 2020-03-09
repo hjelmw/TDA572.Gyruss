@@ -14,6 +14,7 @@
 #include "SDL_image.h"
 #include "SDL_mixer.h"
 #include "Sprite.hpp"
+#include "Audio.hpp"
 #include "Common.hpp"
 #include <string>     // std::string, std::to_string
 #include <iostream>
@@ -65,19 +66,14 @@ public:
 	// Returns the keyboard status. If a flag is set, the corresponding key is being held down.
 	void GetKeyStatus(KeyStatus& keys);
 
-	struct Audio {
-		std::string fileName;
-		bool playing;
+	void InitAudio();
 
-		void Play();
-		void Stop();
-		void Resume();
-		void DeleteAudio();
-	};
+	// Returns a playable audio struct. type decides if it is longer (background) or shorter (sound effect)
+	Audio* LoadAudio(const char *filename, bool type);
 
-	Audio* LoadAudio(const char *filename);
-
-
+	void PlayAudio(Audio* audio);
+	void StopAudio(Audio* audio);
+	
 
 private:
 	SDL_Window * window;

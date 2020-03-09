@@ -38,9 +38,6 @@ public:
 	// Initializes a starfield with stars.
 	void Init(AvancezLib* engine, int amount);
 
-	// Destroy the starfield
-	void Destroy();
-
 	// Draws stars and updates their position in the field
 	void DrawStars(float dt);
 
