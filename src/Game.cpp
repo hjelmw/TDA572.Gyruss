@@ -215,7 +215,7 @@ void Game::Init()
 	playerSprite->Init();
 
 	// Aliens spawn after 5 seconds initially
-	spawnDelay = engine->GetElapsedTime() + 5;
+	spawnDelay = engine->GetElapsedTime() + 3;
 
 	// No powerup at startup
 	powerupSpawnDelay = engine->GetElapsedTime() + POWERUP_SPAWN_INTERVAL;
