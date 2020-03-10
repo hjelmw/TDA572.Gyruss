@@ -207,6 +207,7 @@ void Game::Create(AvancezLib* engine)
 	backgroundAudio = engine->LoadAudio("data/boss_battle.mp3", true);
 	alienHitAudio = engine->LoadAudio("data/hit.wav", false);
 	pickupAudio = engine->LoadAudio("data/powerup.wav", false);
+	gameOverAudio = engine->LoadAudio("data/gameover.wav", false);
 }
 
 
@@ -322,7 +323,7 @@ void Game::Draw(float dt)
 
 	std::stringstream levelText;
 	levelText.str("");
-	levelText << "Level: " << level;
+	levelText << "Level: " << level + 1;
 
 	// Draw shield around player if recently hit
 	if (playerSprite->invulnerable)
@@ -342,6 +343,7 @@ void Game::Receive(Message m)
 	if (m == GAME_OVER)
 	{
 		gameOver = true;
+		gameOverAudio->Play(0);
 	}
 
 	if (m == ALIEN_HIT)
@@ -367,14 +369,16 @@ void Game::Destroy()
 	for (auto go = game_objects.begin(); go != game_objects.end(); go++)
 		(*go)->Destroy();
 
-	//lifeSprite->Destroy();
-
 	aliensPool.Destroy();
 	bombsPool.Destroy();
 	rocketsPool.Destroy();
+	asteroidsPool.Destroy();
+	orbsPool.Destroy();
+	powerupsPool.Destroy();
 
 	backgroundAudio->Destroy();
 	alienHitAudio->Destroy();
+	pickupAudio->Destroy();
 
 	game_objects.clear();
 }

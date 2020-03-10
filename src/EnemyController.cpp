@@ -91,18 +91,22 @@ void EnemyControllerBehaviorComponent::GiveAlienRandomState(Alien* alien, Alien:
 		// Generate new random position for the swarm
 		int randX = rand() % ((engine->screenWidth / 2) - 50) + 400;
 		int randY = rand() % ((engine->screenHeight / 2) - 50) + 400;
-		if ((alien->currentState == Alien::STATE_CIRCLE || alien->currentState == Alien::STATE_CIRCLE_OUTER))
+		for (int i = 0; i < ALIENS_IN_SWARM; i++)
 		{
-			// Slight variation in swarm position for each alien
-			double swarmPosX = randX + fmod(rand(), 80);
-			double swarmPosY = randX + fmod(rand(), 80);
-			Vector2D newPosition = Vector2D(swarmPosX, swarmPosY);
+			Alien* alienToReposition = aliensPool->SelectRandom();
+			if ((alienToReposition->currentState == Alien::STATE_CIRCLE || alienToReposition->currentState == Alien::STATE_CIRCLE_OUTER))
+			{
+				// Slight variation in swarm position for each alien
+				double swarmPosX = randX + fmod(rand(), 80);
+				double swarmPosY = randX + fmod(rand(), 80);
+				Vector2D newPosition = Vector2D(swarmPosX, swarmPosY);
 
-			// Set alien direction to new position
-			double distance = sqrt(pow(newPosition.x - alien->position.x, 2) + pow(newPosition.y - alien->position.y, 2));
-			alien->direction = (alien->position - newPosition) / distance;
-			alien->radius = distance / 2;
-			alien->currentState = static_cast<Alien::AlienState>(alienAction);
+				// Set alien direction to new position
+				double distance = sqrt(pow(newPosition.x - alien->position.x, 2) + pow(newPosition.y - alien->position.y, 2));
+				alienToReposition->direction = (alien->position - newPosition) / distance;
+				alienToReposition->radius = distance / 2;
+				alienToReposition->currentState = static_cast<Alien::AlienState>(alienAction);
+			}
 		}
 		SDL_Log("Alien::Reposition");
 	}
@@ -136,8 +140,8 @@ int EnemyControllerBehaviorComponent::AlienCanPerformRandomAction()
 	timeAlienAction = engine->GetElapsedTime() + ((EnemyController*)go)->alienActionInterval;
 	int randomAction = rand() % 7 + 4;
 
-	//return randomAction;
-	return 6;
+	return randomAction;
+	//return 6;
 }
 
 

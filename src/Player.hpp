@@ -25,11 +25,18 @@ class PlayerBehaviourComponent : public Component
 	float angle;
 	float angle_percent;
 
+	float velocity;
+	float acceleration;
+
 	float originX;
 	float originY;
 
+	int playerHP;
+
 	Audio* playerFire;
 	Audio* laserFire;
+	Audio* playerHit;
+
 public:
 	virtual ~PlayerBehaviourComponent();
 

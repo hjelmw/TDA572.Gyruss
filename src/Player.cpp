@@ -40,6 +40,11 @@ void PlayerBehaviourComponent::Init()
 
 	playerFire = engine->LoadAudio("data/fire.wav", false);
 	laserFire = engine->LoadAudio("data/laser.wav", false);
+	playerHit = engine->LoadAudio("data/damage.wav", false);
+
+	// Player stands still at start of game
+	velocity = 30;
+	acceleration = -velocity;
 }
 
 // Player can move left, right or fire rockets towards the middle of the screen
@@ -47,22 +52,51 @@ void PlayerBehaviourComponent::Update(float dt)
 {
 	auto* player = (Player*)go;
 
+	if (player->lives < playerHP)
+		playerHit->Play(5);
+
 	if (player->invulnerabilityTime - engine->GetElapsedTime() < 0)
 	{
 		player->invulnerable = false;
 		player->shotsPiercing = false;
 	}
 
+	velocity = PLAYER_VELOCITY * dt + acceleration * dt;
+
 	AvancezLib::KeyStatus keys;
 	engine->GetKeyStatus(keys);
 	if (keys.right)
 	{
-		Move(dt * PLAYER_SPEED);
+		acceleration += PLAYER_ACCELERATION * dt;
+		if (acceleration > PLAYER_MAXIMUM_VELOCITY)
+			acceleration = PLAYER_MAXIMUM_VELOCITY;
 	}
-	if (keys.left)
+	else if (keys.left)
 	{
-		Move(-dt * PLAYER_SPEED);
+		acceleration -= PLAYER_ACCELERATION * dt;
+		if (acceleration < -PLAYER_MAXIMUM_VELOCITY)
+			acceleration = -PLAYER_MAXIMUM_VELOCITY;
 	}
+
+	// If no key is pressed player speed should slowly decelerate to 0
+	else
+	{
+		if (velocity > 0)
+		{
+			acceleration -= PLAYER_IDLE_DECELERATION * dt;
+			if (velocity <= 0)
+				velocity = 0;
+		}
+		else if (velocity < 0)
+		{
+			acceleration += PLAYER_IDLE_DECELERATION * dt;
+			if (velocity >= 0)
+				velocity = 0;
+		}
+	}
+	Move(velocity);
+
+
 	if (keys.fire)
 	{
 		if (CanFire())
@@ -82,7 +116,7 @@ void PlayerBehaviourComponent::Update(float dt)
 			}
 		}
 	}
-
+	playerHP = player->lives;
 	RotatePlayer();
 }
 
@@ -90,14 +124,10 @@ void PlayerBehaviourComponent::Update(float dt)
 // move the player left or right
 void PlayerBehaviourComponent::Move(float move)
 {
-
 	angle += move;
 
 	go->position.x = originX + radius * cos((angle * (M_PI / 180.0f)));
 	go->position.y = originY + radius * sin((angle * (M_PI / 180.0f)));
-
-	go->position.x *= 0.98;
-	go->position.y *= 0.98;
 }
 
 
@@ -162,7 +192,7 @@ void Player::RemoveLife()
 
 void Player::PickeUpPowerup()
 {
-	lives++;
+	lives+=2;
 	invulnerable = true;
 	shotsPiercing = true;
 	invulnerabilityTime = AvancezLib::GetElapsedTime() + PLAYER_INVULNERABLE_TIME;

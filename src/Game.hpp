@@ -53,6 +53,7 @@ private:
 	Audio* backgroundAudio;
 	Audio* alienHitAudio;
 	Audio* pickupAudio;
+	Audio* gameOverAudio;
 
 	ObjectPool<Rocket> rocketsPool;	
 	ObjectPool<Alien> aliensPool;

@@ -229,7 +229,7 @@ void AlienBehaviorComponent::FireOrb(float speed)
 		AlienOrb* orb = orbsPool->FirstAvailable();
 		if (orb != NULL)
 		{
-			Vector2D aimPosition(initialAimPosition.x + i * 160, initialAimPosition.y + i * 160);
+			Vector2D aimPosition(initialAimPosition.x + i * 45, initialAimPosition.y + i * 45);
 			orb->Init(aimPosition, ALIEN_ORB_SPEED, go->position.x, go->position.y);
 			game_objects->insert(orb);
 		}

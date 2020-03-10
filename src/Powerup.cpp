@@ -1,7 +1,8 @@
 //////////////////////////////////////////////////////////////
 //						Powerup
 // \brief Spawns along the circumference on the circle that the player moves around
-//			Colliding with it gives player invlunerability and shots pierce aliens
+//			Colliding with it gives player invlunerability
+//			, causes shots to pierce aliens and one hp back
 //
 //	
 // \see AvancezLib
