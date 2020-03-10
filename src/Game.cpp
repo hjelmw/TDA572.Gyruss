@@ -204,10 +204,9 @@ void Game::Create(AvancezLib* engine)
 	shieldSprite = engine->CreateSprite("data/shield_min.png");
 
 	engine->InitAudio();
-	backgroundAudio = engine->LoadAudio("data/boss_battle.mp3", true);
 	alienHitAudio = engine->LoadAudio("data/hit.wav", false);
 	pickupAudio = engine->LoadAudio("data/powerup.wav", false);
-	gameOverAudio = engine->LoadAudio("data/gameover.wav", false);
+	//backgroundAudio = engine->LoadAudio("data/boss_battle.mp3", true);
 }
 
 
@@ -343,7 +342,6 @@ void Game::Receive(Message m)
 	if (m == GAME_OVER)
 	{
 		gameOver = true;
-		gameOverAudio->Play(0);
 	}
 
 	if (m == ALIEN_HIT)
@@ -376,7 +374,7 @@ void Game::Destroy()
 	orbsPool.Destroy();
 	powerupsPool.Destroy();
 
-	backgroundAudio->Destroy();
+	//backgroundAudio->Destroy();
 	alienHitAudio->Destroy();
 	pickupAudio->Destroy();
 

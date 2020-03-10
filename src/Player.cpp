@@ -16,7 +16,12 @@
 #include <math.h>
 
 
-PlayerBehaviourComponent::~PlayerBehaviourComponent() {}
+PlayerBehaviourComponent::~PlayerBehaviourComponent() 
+{
+	playerFire->Destroy();
+	laserFire->Destroy();
+	playerHit->Destroy();
+}
 
 void PlayerBehaviourComponent::Create(AvancezLib* engine, GameObject* go, std::set<GameObject*>* game_objects, ObjectPool<Rocket>* rocketsPool)
 {

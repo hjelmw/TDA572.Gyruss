@@ -17,7 +17,7 @@
 #define ASTEROID_DIFFICULTY_INCREMENT 0.5
 #define POWERUP_SPAWN_INTERVAL 60.0f
 #define MAX_NUM_POWERUPS 5
-#define	NUM_LIVES 4
+#define	NUM_LIVES 0
 
 /* Star field particel system parameters */
 #define	AMOUNT_OF_STARS 200
