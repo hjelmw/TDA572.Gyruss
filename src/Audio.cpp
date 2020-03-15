@@ -19,14 +19,13 @@ Audio::Audio(const char* filename, bool type)
 		this->backgroundMusic = Mix_LoadMUS(filename);
 	else
 		this->soundEffect = Mix_LoadWAV(filename);
+
+
 }
 
 
 void Audio::Play(int loops)
 {
-	// 128 / 12 => about 10% volume
-	Mix_VolumeMusic(12);
-	Mix_Volume(-1, 12); 
 	if (!Mix_PlayingMusic())
 	{
 		if (this->type && !Mix_PlayingMusic())

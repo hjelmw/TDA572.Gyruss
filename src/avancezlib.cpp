@@ -51,7 +51,7 @@ bool AvancezLib::Init(int width, int height)
 	}
 
 	// initialize the keys
-	keyStatus.fire = false;	keyStatus.left = false;	keyStatus.right = false; keyStatus.esc = false;
+	keyStatus.fire = false;	keyStatus.left = false;	keyStatus.right = false; keyStatus.esc = false; keyStatus.mute = false;
 
 	//Initialize renderer color
 	SDL_SetRenderDrawColor(renderer, 0xFF, 0xFF, 0xFF, 0xFF);
@@ -61,6 +61,7 @@ bool AvancezLib::Init(int width, int height)
 
 	SDL_Log("System up and running...\n");
 	return true;
+
 }
 
 
@@ -123,6 +124,9 @@ void AvancezLib::ProcessInput()
 			case SDLK_RIGHT:
 				keyStatus.right = true;
 				break;
+			case SDLK_m:
+				keyStatus.mute = true;
+				break;
 			}
 		}
 		if (event.type == SDL_KEYUP)
@@ -138,9 +142,11 @@ void AvancezLib::ProcessInput()
 			case SDLK_RIGHT:
 				keyStatus.right = false;
 				break;
+			case SDLK_m:
+				keyStatus.mute = false;
+				break;
 			}
 		}
-
 	}
 }
 
@@ -209,7 +215,10 @@ float AvancezLib::GetElapsedTime()
 void AvancezLib::InitAudio()
 {
 	Mix_OpenAudio(22050, MIX_DEFAULT_FORMAT, 2, 2048);
-	Mix_VolumeMusic(64);
+	
+	// 128 / 12 => about 10% volume
+	Mix_VolumeMusic(12);
+	Mix_Volume(-1, 12); 
 }
 
 
@@ -217,4 +226,3 @@ Audio* AvancezLib::LoadAudio(const char* filename, bool type)
 {
 	return new Audio(filename, type);
 }
-

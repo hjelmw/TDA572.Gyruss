@@ -14,8 +14,13 @@
 
 void PowerupBehaviorComponent::Update(float dt)
 {
-	// Currently doesn't move
 	go->angle += fmod((double)(dt * 40), 360);
+	if (go->width <= 60 || go->height <= 60)
+	{
+		go->width += 40 * dt;
+		go->height += 40 * dt;
+	}
+
 }
 
 
@@ -32,8 +37,8 @@ void PowerupBehaviorComponent::Init()
 	go->position.x = (double)(originX + radius * cos((randomAngle)));
 	go->position.y = (double)(originY + radius * sin((randomAngle)));
 
-	go->width = 50;
-	go->height = 50;
+	go->width = 1;
+	go->height = 1;
 
 }
 

@@ -21,7 +21,7 @@ void Starfield::Init(AvancezLib* engine, int amount) {
 
 
 	// reserve vector size for speed
-	stars.reserve(amount);
+	this->stars.reserve(amount);
 	for (int i = 0; i < amount; i++)
 	{
 		double randomAngle = circumferenceDistribution(generator);

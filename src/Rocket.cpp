@@ -14,6 +14,7 @@
 #include "Rocket.hpp"
 #include "Common.hpp"
 
+
 void RocketBehaviourComponent::Update(float dt)
 {
 	if (RocketShouldMove())
@@ -28,7 +29,7 @@ void RocketBehaviourComponent::Update(float dt)
 
 bool RocketBehaviourComponent::RocketShouldMove()
 {
-	return (go->width >= 2 && go->height >= 2);
+	return (go->width >= 5 && go->height >= 5);
 }
 
 
@@ -41,8 +42,8 @@ void RocketBehaviourComponent::MoveRocket(float dt)
 
 void RocketBehaviourComponent::ShrinkRocket(float dt)
 {
-	go->width -= (ROCKET_SPEED / 20) * dt;
-	go->height -= (ROCKET_SPEED / 20) * dt;
+	go->width -= (ROCKET_SPEED / 16) * dt;
+	go->height -= (ROCKET_SPEED / 16) * dt;
 }
 
 

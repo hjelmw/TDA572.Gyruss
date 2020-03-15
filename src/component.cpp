@@ -101,33 +101,3 @@ void BoxCollideComponent::Update(float dt)
 		//SDL_Log("Out of bounds");
 	}
 }
-
-void SATCollideComponent::Create(AvancezLib* engine, GameObject* go, std::set<GameObject*>* game_objects, ObjectPool<GameObject>* coll_objects)
-{
-	Component::Create(engine, go, game_objects);
-	this->coll_objects = coll_objects;
-
-}
-
-
-void SATCollideComponent::Update(float dt)
-{
-	for (auto i = 0; i < coll_objects->pool.size(); i++)
-	{
-		GameObject* go0 = coll_objects->pool[i];
-		if (go0->enabled)
-		{
-			if (CheckSATCollision(go, go0))
-			{
-				go->Receive(HIT);
-				go0->Receive(HIT);
-			}
-		}
-	}
-}
-
-
-bool SATCollideComponent::CheckSATCollision(GameObject *a, GameObject *b)
-{
-	return true;
-}

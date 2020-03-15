@@ -61,6 +61,7 @@ public:
 		bool left; // left arrow
 		bool right; // right arrow
 		bool esc; // escape button
+		bool mute; // mute button
 	};
 
 	// Returns the keyboard status. If a flag is set, the corresponding key is being held down.
@@ -72,8 +73,6 @@ public:
 	Audio* LoadAudio(const char *filename, bool type);
 
 	void PlayAudio(Audio* audio);
-	void StopAudio(Audio* audio);
-	
 
 private:
 	SDL_Window * window;

@@ -52,6 +52,7 @@ void EnemyControllerBehaviorComponent::Update(float dt)
 
 		if (AlienCanSeePlayer(alien) && (alienVisionFireInterval - engine->GetElapsedTime() < 0) && alien->currentState != Alien::STATE_REPOSITION)
 		{
+			alien->previousState = alien->currentState;
 			alien->currentState = Alien::STATE_FIRE3;
 			alienVisionFireInterval = engine->GetElapsedTime() + ALIEN_NEAR_FIRE_INTERVAL;
 			SDL_Log("Alien::See player!");
@@ -94,8 +95,8 @@ void EnemyControllerBehaviorComponent::GiveAlienRandomState(Alien* alien, Alien:
 		for (int i = 0; i < ALIENS_IN_SWARM; i++)
 		{
 			Alien* alienToReposition = aliensPool->SelectRandom();
-			if ((alienToReposition->currentState == Alien::STATE_CIRCLE || alienToReposition->currentState == Alien::STATE_CIRCLE_OUTER))
-			{
+			if (alienToReposition->currentState == Alien::STATE_CIRCLE)
+			{	
 				// Slight variation in swarm position for each alien
 				double swarmPosX = randX + fmod(rand(), 80);
 				double swarmPosY = randX + fmod(rand(), 80);
@@ -114,14 +115,17 @@ void EnemyControllerBehaviorComponent::GiveAlienRandomState(Alien* alien, Alien:
 
 	case Alien::STATE_FIRE1:
 	{
-		alien->currentState = static_cast<Alien::AlienState>(alienAction);
+		if (alien->currentState != Alien::STATE_FIRE2 || alien->currentState != Alien::STATE_FIRE1)
+			alien->currentState = static_cast<Alien::AlienState>(alienAction);
 		SDL_Log("Alien::Fire1");
 	}
 	break;
 
 	case Alien::STATE_FIRE2:
 	{
-		alien->currentState = static_cast<Alien::AlienState>(alienAction);
+		if(alien->currentState != Alien::STATE_FIRE2 || alien->currentState != Alien::STATE_FIRE1)
+			alien->currentState = static_cast<Alien::AlienState>(alienAction);
+		SDL_Log("Alien::Fire2");
 	}
 	break;
 

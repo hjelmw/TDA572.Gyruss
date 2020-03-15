@@ -203,9 +203,11 @@ void Game::Create(AvancezLib* engine)
 	lifeSprite = engine->CreateSprite("data/life.png");
 	shieldSprite = engine->CreateSprite("data/shield_min.png");
 
+	// Load audio assets that will be played in this class
 	engine->InitAudio();
 	alienHitAudio = engine->LoadAudio("data/hit.wav", false);
 	pickupAudio = engine->LoadAudio("data/powerup.wav", false);
+	levelUpAudio = engine->LoadAudio("data/levelup.wav", false);
 	//backgroundAudio = engine->LoadAudio("data/boss_battle.mp3", true);
 }
 
@@ -235,9 +237,7 @@ void Game::Init()
 void Game::Update(float dt)
 {
 	if (gameOver)
-	{
 		dt = 0;
-	}
 
 	AvancezLib::KeyStatus keys;
 	engine->GetKeyStatus(keys);
@@ -284,6 +284,7 @@ void Game::Update(float dt)
 
 		// Received in EnemyController
 		aliens_grid->Receive(NEW_LEVEL);
+		levelUpAudio->Play(level);
 
 		createMoreAliens(ALIENS_AMOUNT, rotateInit);
 	}
@@ -356,7 +357,6 @@ void Game::Receive(Message m)
 		playerSprite->Receive(POWERUP_PICKUP);
 		pickupAudio->Play(0);
 	}
-
 }
 
 
@@ -377,6 +377,7 @@ void Game::Destroy()
 	//backgroundAudio->Destroy();
 	alienHitAudio->Destroy();
 	pickupAudio->Destroy();
+	levelUpAudio->Destroy();
 
 	game_objects.clear();
 }

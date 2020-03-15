@@ -55,7 +55,12 @@ void PlayerBehaviourComponent::Init()
 // Player can move left, right or fire rockets towards the middle of the screen
 void PlayerBehaviourComponent::Update(float dt)
 {
+
+
 	auto* player = (Player*)go;
+
+	if (player->lives < 0)
+		player->Send(GAME_OVER);
 
 	if (player->lives < playerHP)
 		playerHit->Play(5);
@@ -82,6 +87,7 @@ void PlayerBehaviourComponent::Update(float dt)
 		if (acceleration < -PLAYER_MAXIMUM_VELOCITY)
 			acceleration = -PLAYER_MAXIMUM_VELOCITY;
 	}
+
 
 	// If no key is pressed player speed should slowly decelerate to 0
 	else
@@ -117,7 +123,6 @@ void PlayerBehaviourComponent::Update(float dt)
 					laserFire->Play(0);
 				else
 					playerFire->Play(0);
-
 			}
 		}
 	}
@@ -174,10 +179,7 @@ void Player::Receive(Message m)
 		if (!invulnerable)
 		{
 			SDL_Log("Player::Hit!");
-
 			RemoveLife();
-			if (lives < 0)
-				Send(GAME_OVER);
 		}
 	}
 
