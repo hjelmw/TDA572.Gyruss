@@ -25,7 +25,7 @@ Runnable .zip on [gdrive](https://drive.google.com/open?id=1VLEKw-lZ-Q14GqypU09d
 If you instead want to build the game using this repo directly, please see this [link](https://www.wikihow.com/Set-Up-SDL-with-Visual-Studio) first. Afterwards create the folder `./Debug` in the source directory and place the DLLs for `SDL,SDL_ttf,SDL_image,SDL_mixer` in there. Make sure VS configuration is set to `x86` and compile!
 
 ## Pictures!
-Solarized dark             |  Solarized Ocean
+PNG             |  GIF
 :-------------------------:|:-------------------------:
 <img src="https://github.com/hjelmw/TDA572.Gyruss/blob/master/img/Gyruss_development.PNG">   |  <img src="https://github.com/hjelmw/TDA572.Gyruss/blob/master/img/Gyruss%20-%20Gameplay.gif">
 
