@@ -19,9 +19,6 @@
     <Filter Include="Header Files\Engine">
       <UniqueIdentifier>{0965fc61-fe34-4fe0-a1d8-1a988dbd7f5a}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\Gyruss">
-      <UniqueIdentifier>{58e83b75-78e1-4495-b4fd-1d74f6a9424b}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\Game">
       <UniqueIdentifier>{d6b5f659-ab07-4d38-bdfa-093659441050}</UniqueIdentifier>
     </Filter>
@@ -30,6 +27,18 @@
     </Filter>
     <Filter Include="Header Files\Settings">
       <UniqueIdentifier>{1294c20e-062f-4cd7-99b7-813701d61bb2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Game\Entities">
+      <UniqueIdentifier>{dfa3b228-29fc-461c-96f5-96582a93124a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Settings">
+      <UniqueIdentifier>{887fc734-ea26-4c15-97a6-a54654e9654e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Gyruss %28Main%29">
+      <UniqueIdentifier>{58e83b75-78e1-4495-b4fd-1d74f6a9424b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Game\Entities">
+      <UniqueIdentifier>{04b72e50-5737-43c3-9124-326fcc4840b7}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -45,22 +54,7 @@
     <ClInclude Include="src\Vector2D.hpp">
       <Filter>Header Files\Game</Filter>
     </ClInclude>
-    <ClInclude Include="src\Alien.hpp">
-      <Filter>Header Files\Game</Filter>
-    </ClInclude>
-    <ClInclude Include="src\AlienBomb.hpp">
-      <Filter>Header Files\Game</Filter>
-    </ClInclude>
-    <ClInclude Include="src\AlienOrb.hpp">
-      <Filter>Header Files\Game</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Asteroid.hpp">
-      <Filter>Header Files\Game</Filter>
-    </ClInclude>
     <ClInclude Include="src\Component.hpp">
-      <Filter>Header Files\Game</Filter>
-    </ClInclude>
-    <ClInclude Include="src\EnemyController.hpp">
       <Filter>Header Files\Game</Filter>
     </ClInclude>
     <ClInclude Include="src\Game.hpp">
@@ -72,20 +66,35 @@
     <ClInclude Include="src\ObjectPool.hpp">
       <Filter>Header Files\Game</Filter>
     </ClInclude>
-    <ClInclude Include="src\Player.hpp">
-      <Filter>Header Files\Game</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Rocket.hpp">
-      <Filter>Header Files\Game</Filter>
-    </ClInclude>
     <ClInclude Include="src\Common.hpp">
       <Filter>Header Files\Settings</Filter>
     </ClInclude>
-    <ClInclude Include="src\Powerup.hpp">
-      <Filter>Header Files\Game</Filter>
-    </ClInclude>
     <ClInclude Include="src\Starfield.hpp">
-      <Filter>Header Files\Game</Filter>
+      <Filter>Header Files\Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Alien.hpp">
+      <Filter>Header Files\Game\Entities</Filter>
+    </ClInclude>
+    <ClInclude Include="src\AlienBomb.hpp">
+      <Filter>Header Files\Game\Entities</Filter>
+    </ClInclude>
+    <ClInclude Include="src\AlienOrb.hpp">
+      <Filter>Header Files\Game\Entities</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Asteroid.hpp">
+      <Filter>Header Files\Game\Entities</Filter>
+    </ClInclude>
+    <ClInclude Include="src\EnemyController.hpp">
+      <Filter>Header Files\Game\Entities</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Player.hpp">
+      <Filter>Header Files\Game\Entities</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Powerup.hpp">
+      <Filter>Header Files\Game\Entities</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Rocket.hpp">
+      <Filter>Header Files\Game\Entities</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -99,27 +108,9 @@
       <Filter>Source Files\Engine</Filter>
     </ClCompile>
     <ClCompile Include="src\Gyruss.cpp">
-      <Filter>Source Files\Gyruss</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Alien.cpp">
-      <Filter>Source Files\Game</Filter>
-    </ClCompile>
-    <ClCompile Include="src\AlienBomb.cpp">
-      <Filter>Source Files\Game</Filter>
-    </ClCompile>
-    <ClCompile Include="src\AlienOrb.cpp">
-      <Filter>Source Files\Game</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Asteroid.cpp">
-      <Filter>Source Files\Game</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Common.cpp">
-      <Filter>Source Files\Game</Filter>
+      <Filter>Source Files\Gyruss %28Main%29</Filter>
     </ClCompile>
     <ClCompile Include="src\Component.cpp">
-      <Filter>Source Files\Game</Filter>
-    </ClCompile>
-    <ClCompile Include="src\EnemyController.cpp">
       <Filter>Source Files\Game</Filter>
     </ClCompile>
     <ClCompile Include="src\Game.cpp">
@@ -128,17 +119,35 @@
     <ClCompile Include="src\GameObject.cpp">
       <Filter>Source Files\Game</Filter>
     </ClCompile>
-    <ClCompile Include="src\Player.cpp">
-      <Filter>Source Files\Game</Filter>
+    <ClCompile Include="src\Starfield.cpp">
+      <Filter>Source Files\Engine</Filter>
     </ClCompile>
-    <ClCompile Include="src\Rocket.cpp">
-      <Filter>Source Files\Game</Filter>
+    <ClCompile Include="src\Alien.cpp">
+      <Filter>Source Files\Game\Entities</Filter>
+    </ClCompile>
+    <ClCompile Include="src\AlienBomb.cpp">
+      <Filter>Source Files\Game\Entities</Filter>
+    </ClCompile>
+    <ClCompile Include="src\AlienOrb.cpp">
+      <Filter>Source Files\Game\Entities</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Asteroid.cpp">
+      <Filter>Source Files\Game\Entities</Filter>
+    </ClCompile>
+    <ClCompile Include="src\EnemyController.cpp">
+      <Filter>Source Files\Game\Entities</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Player.cpp">
+      <Filter>Source Files\Game\Entities</Filter>
     </ClCompile>
     <ClCompile Include="src\Powerup.cpp">
-      <Filter>Source Files\Game</Filter>
+      <Filter>Source Files\Game\Entities</Filter>
     </ClCompile>
-    <ClCompile Include="src\Starfield.cpp">
-      <Filter>Source Files\Game</Filter>
+    <ClCompile Include="src\Rocket.cpp">
+      <Filter>Source Files\Game\Entities</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Common.cpp">
+      <Filter>Source Files\Settings</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
